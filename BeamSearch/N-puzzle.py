@@ -20,8 +20,6 @@ def N_Puzzle(N):
 
     return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
 
-N_Puzzle(10)
-
 def busqueda_en_haz2(B, initial_state, memory, goal_state):
     # Initialization
     g = 0  # Cost
@@ -147,6 +145,8 @@ def neighbours(state):
 def heuristic(state):
 
     result = float('inf')
+    num_col = 0
+    num_row = 0
     zero_col = -1
     zero_row = -1
     M = sqrt(len(state))
@@ -163,3 +163,5 @@ def heuristic(state):
 
     result = zero_row + zero_col
     return result
+
+print(N_Puzzle(8))
