@@ -1,0 +1,1 @@
+# N-Puzzle from Artificial Intelligence Subject
