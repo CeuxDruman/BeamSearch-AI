@@ -14,15 +14,14 @@
 # - This process continues until the goal node is found, the hash table becomes full (indicating that the memory available has been exhausted), or the BEAM is empty after the main loop has completed (indicating a dead end in the search).
 
 def busqueda_en_haz(B, initial_state, memory, goal_state):
-
     # Initialization
-    g = 0   # Cost
-    hash_table = [] # Memory
+    g = 0  # Cost
+    hash_table = []  # Memory
     BEAM = [initial_state]
 
     # Main loop
-    while len(BEAM) != 0:       # loop until the BEAM contains no nodes
-        SET = []                # the empty set
+    while len(BEAM) != 0:  # loop until the BEAM contains no nodes
+        SET = []  # the empty set
 
         # Generate the SET nodes
         for state in BEAM:
@@ -35,11 +34,11 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
         ### Order the SET nodes ascending by their H
 
         # OPTION 1
-        #SETOrdered = []
-        #currentState = SET[0]
-        #count = 0
+        # SETOrdered = []
+        # currentState = SET[0]
+        # count = 0
 
-        #while count < len(SET):
+        # while count < len(SET):
         #    for state in SET:
         #        if state.getH < currentState.getH:
         #            currentState = state
@@ -47,10 +46,9 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
         #    count = count + 1
 
         # OPTION 2
-        SET.sort(key=lambda state: state.getH, reverse=False) # 
+        SET.sort(key=lambda state: state.getH, reverse=False)  #
 
-
-        BEAM = []               # the empty set
+        BEAM = []  # the empty set
         g = g + 1
 
         # Fill the BEAM for the next loop
@@ -65,6 +63,6 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
             if state not in hash_table:
                 if len(hash_table) >= memory:
                     return float('inf')
-                hash_table.append(state)            
+                hash_table.append(state)
 
     return g
