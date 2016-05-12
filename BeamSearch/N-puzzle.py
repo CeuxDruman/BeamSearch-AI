@@ -43,19 +43,23 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
         ### Order the SET nodes ascending by their H
 
         # OPTION 1
-        # SETOrdered = []
-        # currentState = SET[0]
-        # count = 0
+        SETOrdered = []
+        currentState = SET[0]
+        count = 0
 
-        # while count < len(SET):
-        #    for state in SET:
-        #        if state.getH < currentState.getH:
-        #            currentState = state
-        #    SETOrdered.append(currentState)
-        #    count = count + 1
+        while count < len(SET):
+           for state in SET:
+               if heuristic(state) < heuristic(currentState) and state not in SETOrdered:
+                   currentState = state
+           SETOrdered.append(currentState)
+           count = count + 1
+
+        SET = SETOrdered
 
         # OPTION 2
-        SET.sort(key=lambda state: state.getH, reverse=False)  #
+        #SET.sort(key=lambda state: state.heuristic, reverse=False)
+
+
 
         BEAM = []  # the empty set
         g = g + 1
@@ -138,4 +142,24 @@ def neighbours(state):
         state[posCasillaVacia] = pieza4
         result.append(state4)
 
+    return result
+
+def heuristic(state):
+
+    result = float('inf')
+    zero_col = -1
+    zero_row = -1
+    M = sqrt(len(state))
+
+    for num in state:  # por cada casilla
+        if num_col == M:  # si el último elemento que se metió estaba al final de una fila
+            num_row = num_row + 1  # aumentamos el contador de filas
+            num_col = 0  # ponemos el contador de columnas a 0 (la primera)
+        if (num == 0):
+            zero_row = num_row
+            zero_col = num_col
+            break
+        num_col = num_col + 1  # aumentamos el contador de columnas (para que la siguiente pieza vaya en la casila de su derecha)
+
+    result = zero_row + zero_col
     return result
