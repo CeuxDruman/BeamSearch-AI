@@ -15,8 +15,8 @@ def N_Puzzle(N):
     estado_inicial = [a for a in range(num_Casillas)]
     shuffle(estado_inicial)
 
-    #print(estado_final)
-    #print(estado_inicial)
+    print(estado_final)
+    print(estado_inicial)
 
     return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
 
@@ -175,7 +175,8 @@ def heuristic(state):
     result = zero_row + zero_col
     return result
 
-print(N_Puzzle(8))
+#print(N_Puzzle(8))
 #N_Puzzle(8)
 
 #print(neighbours([0,1,2,3,4,5,6,7,8]))
+#print(heuristic([0,1,2,3,4,5,6,7,8]))
