@@ -32,6 +32,7 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
 
         # Generate the SET nodes
         for state in BEAM:
+            #print(neighbours(state))
             for successor in neighbours(state):
                 if successor == goal_state:
                     g = g + 1
@@ -66,13 +67,16 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
         while len(SET) != 0 and B > len(BEAM):
             count = 0
             while count < B:
+                #print(SET)
                 state = SET.pop(count)
                 BEAM.append(state)
                 count = count + 1
 
         for state in BEAM:
             if state not in hash_table:
+                print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
+                    print("Fallo1")
                     return float('inf')
                 hash_table.append(state)
 
@@ -108,43 +112,50 @@ def neighbours(state):
     posCasillaVacia = state.index(0)
 
     if(not zero_row-1< 0):
+        #print("Vecino de arriba")
         vecino1 = (zero_col,zero_row-1)               # Vecino de arriba
         state1 = deepcopy(state)
         pieza1 = tablero[vecino1[1]][vecino1[0]]
         posPieza1EnState = state.index(pieza1)
-        state[posPieza1EnState] = 0
-        state[posCasillaVacia] = pieza1
+        state1[posPieza1EnState] = 0
+        state1[posCasillaVacia] = pieza1
         result.append(state1)
+        #print(state1)
     if(not zero_col+1 > M-1):
+        #print("Vecino a la derecha")
         vecino2 = (zero_col+1,zero_row)               # Vecino a la derecha
         state2 = deepcopy(state)
         pieza2 = tablero[vecino2[1]][vecino2[0]]
         posPieza2EnState = state.index(pieza2)
-        state[posPieza2EnState] = 0
-        state[posCasillaVacia] = pieza2
+        state2[posPieza2EnState] = 0
+        state2[posCasillaVacia] = pieza2
         result.append(state2)
+        #print(state2)
     if(not zero_row+1 > M-1):
+        #print("Vecino de abajo")
         vecino3 = (zero_col,zero_row+1)               # Vecino de abajo
         state3 = deepcopy(state)
         pieza3 = tablero[vecino3[1]][vecino3[0]]
         posPieza3EnState = state.index(pieza3)
-        state[posPieza3EnState] = 0
-        state[posCasillaVacia] = pieza3
+        state3[posPieza3EnState] = 0
+        state3[posCasillaVacia] = pieza3
         result.append(state3)
+        #print(state3)
     if(not zero_col-1< 0):
+        #print("Vecino a izquierda")
         vecino4 = (zero_col-1,zero_row)               # Vecino de la izquierda
         state4 = deepcopy(state)
         pieza4 = tablero[vecino4[1]][vecino4[0]]
         posPieza4EnState = state.index(pieza4)
-        state[posPieza4EnState] = 0
-        state[posCasillaVacia] = pieza4
+        state4[posPieza4EnState] = 0
+        state4[posCasillaVacia] = pieza4
         result.append(state4)
+        #print(state4)
 
     return result
 
 def heuristic(state):
 
-    result = float('inf')
     num_col = 0
     num_row = 0
     zero_col = -1
@@ -165,3 +176,6 @@ def heuristic(state):
     return result
 
 print(N_Puzzle(8))
+#N_Puzzle(8)
+
+#print(neighbours([0,1,2,3,4,5,6,7,8]))
