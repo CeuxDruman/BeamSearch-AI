@@ -19,7 +19,8 @@ def N_Puzzle(N):
     print(estado_inicial)
 
     #return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
-    return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], num_Casillas, estado_final)
+    #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
+    return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
 
 
 def busqueda_en_haz2(B, initial_state, memory, goal_state):
@@ -52,19 +53,36 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
 
         print("SET sin ordenar: %s" % (SET))
 
-        ### Order the SET nodes ascending by their H
+        ### Order the SET nodes ascending by their Heur.
 
         # OPTION 1
         SETOrdered = []
-        currentState = SET[0]
-        count = 0
 
-        while count < len(SET):
+        count = 0
+        currentState = SET[count]
+
+        #while count < len(SET):
+        for a in SET: # Recorremos una vez el SET por cada elemento que contenga
+
+           # Filtramos primero para asegurarnos de que el estado recorrido no esté ya en la lista ordenada
+           cS = deepcopy(currentState)
+           for eachElement in SET:
+               if(cS not in SETOrdered):
+                   break
+               else:
+                    cS = deepcopy(eachElement)
+           currentState = deepcopy(cS)
+
+           # Ahora cogemos el mejor de esta iteración, sin tener en cuenta los ya cogidos en iteraciones anteriores
+
+           #currentState = SET[count]
            for state in SET:
                if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
-                   currentState = state
+                   #print("Supuestamente %s no está en %s" % (state, SETOrdered))
+                   currentState = deepcopy(state)
+           print("currentState: %s (Heur: %s)" % (currentState,heuristic(currentState)))
            SETOrdered.append(currentState)
-           count = count + 1
+           #count = count + 1
 
         SET = SETOrdered
 
@@ -91,7 +109,6 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
             if state not in hash_table:
                 print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
-                    print("Fallo1")
                     return float('inf')
                 hash_table.append(state)
 
