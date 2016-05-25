@@ -15,8 +15,8 @@ def N_Puzzle(N):
     estado_inicial = [a for a in range(num_Casillas)]
     shuffle(estado_inicial)
 
-    print(estado_final)
-    print(estado_inicial)
+    print("estado_final: %s" % (estado_final))
+    print("estado_inicial: %s" % (estado_inicial))
 
     return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
     #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
