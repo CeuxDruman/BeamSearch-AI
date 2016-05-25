@@ -19,7 +19,7 @@ def N_Puzzle(N):
     print(estado_inicial)
 
     #return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
-    return busqueda_en_haz2(1, [0,1,2,3,4,5,6,7,8], num_Casillas, estado_final)
+    return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], num_Casillas, estado_final)
 
 
 def busqueda_en_haz2(B, initial_state, memory, goal_state):
@@ -32,15 +32,25 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
         SET = []  # the empty set
 
+        print("BEAM: %s" % (BEAM))
+
         # Generate the SET nodes
         for state in BEAM:
-            #print(neighbours(state))
+            #print("neighbours: %s" % (neighbours(state)))
+            contadoor = 0
             for successor in neighbours(state):
+                #print("Sucesor %s: %s" % (contadoor, successor))
                 if successor == goal_state:
                     g = g + 1
                     return g
                 if successor not in SET:
+                    #print("pre-SET: %s" % (SET))
                     SET.append(successor)
+                    #print("añadido")
+                    #print("post-SET: %s" % (SET))
+                contadoor = contadoor + 1
+
+        print("SET sin ordenar: %s" % (SET))
 
         ### Order the SET nodes ascending by their H
 
@@ -51,7 +61,7 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
 
         while count < len(SET):
            for state in SET:
-               if heuristic(state) < heuristic(currentState) and state not in SETOrdered:
+               if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
                    currentState = state
            SETOrdered.append(currentState)
            count = count + 1
@@ -61,7 +71,7 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
         # OPTION 2
         #SET.sort(key=lambda state: state.heuristic, reverse=False)
 
-
+        print("SET ordenado: %s" % (SET))
 
         BEAM = []  # the empty set
         g = g + 1

@@ -55,6 +55,8 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
         while len(SET) != 0 and b > len(BEAM):
             count = 0
             while count < B:
+                if(count > len(SET)-1):
+                    break
                 state = SET.pop(count)
                 BEAM.append(state)
                 count = count + 1
