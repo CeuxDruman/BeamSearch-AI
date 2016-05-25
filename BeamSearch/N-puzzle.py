@@ -18,8 +18,8 @@ def N_Puzzle(N):
     print(estado_final)
     print(estado_inicial)
 
-    return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
-    #return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], num_Casillas, estado_final)
+    #return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
+    return busqueda_en_haz2(1, [0,1,2,3,4,5,6,7,8], num_Casillas, estado_final)
 
 
 def busqueda_en_haz2(B, initial_state, memory, goal_state):
@@ -71,6 +71,8 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
             count = 0
             while count < B:
                 #print(SET)
+                if(count > len(SET)-1):
+                    break
                 state = SET.pop(count)
                 BEAM.append(state)
                 count = count + 1
