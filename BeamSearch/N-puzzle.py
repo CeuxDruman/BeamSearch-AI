@@ -18,9 +18,9 @@ def N_Puzzle(N):
     print(estado_final)
     print(estado_inicial)
 
-    #return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
+    return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
     #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
-    return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
+    #return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
 
 
 def busqueda_en_haz2(B, initial_state, memory, goal_state):
@@ -208,6 +208,9 @@ def heuristic(state):
     return result
 
 print(N_Puzzle(8))
+#print(N_Puzzle(15))
+#print(N_Puzzle(24))
+#print(N_Puzzle(99))
 #N_Puzzle(8)
 
 #print(neighbours([0,1,2,3,4,5,6,7,8]))
