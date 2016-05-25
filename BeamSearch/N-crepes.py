@@ -116,72 +116,38 @@ def busqueda_en_haz3(B, initial_state, memory, goal_state):
 def neighbours(state):
 
     result = []
-    num_Casillas = len(state)
-    M = sqrt(num_Casillas)
-    tablero = [] # Tablero dividido en filas
-    tablero.append([]) # Le metemos la primera fila vacía
-    num_row = 0
-    num_col = 0
-    zero_row = -1
-    zero_col = -1
+    c = 2
 
-    # Dividimos el tablero en filas
+    for a in state:
 
-    for num in state:                   # por cada casilla
-        if num_col == M:                # si el último elemento que se metió estaba al final de una fila
-            tablero.append([])          # creamos la fila siguiente
-            num_row = num_row + 1       # aumentamos el contador de filas
-            num_col = 0                 # ponemos el contador de columnas a 0 (la primera)
-        tablero[num_row].append(num)    # Metemos la siguiente pieza en la casilla que le corresponde
-        if(num == 0):
-            zero_row = num_row
-            zero_col = num_col
-        num_col = num_col + 1           # aumentamos el contador de columnas (para que la siguiente pieza vaya en la casila de su derecha)
+        k = c
 
-    # Detectamos los vecinos del estado actual
+        if(k == len(state)+1):
+            break
 
-    posCasillaVacia = state.index(0)
+        copiedState = deepcopy(state)
+        crepesToInvest = []
+        #counter = 0
 
-    if(not zero_row-1< 0):
-        #print("Vecino de arriba")
-        vecino1 = (zero_col,zero_row-1)               # Vecino de arriba
-        state1 = deepcopy(state)
-        pieza1 = tablero[vecino1[1]][vecino1[0]]
-        posPieza1EnState = state.index(pieza1)
-        state1[posPieza1EnState] = 0
-        state1[posCasillaVacia] = pieza1
-        result.append(state1)
-        #print(state1)
-    if(not zero_col+1 > M-1):
-        #print("Vecino a la derecha")
-        vecino2 = (zero_col+1,zero_row)               # Vecino a la derecha
-        state2 = deepcopy(state)
-        pieza2 = tablero[vecino2[1]][vecino2[0]]
-        posPieza2EnState = state.index(pieza2)
-        state2[posPieza2EnState] = 0
-        state2[posCasillaVacia] = pieza2
-        result.append(state2)
-        #print(state2)
-    if(not zero_row+1 > M-1):
-        #print("Vecino de abajo")
-        vecino3 = (zero_col,zero_row+1)               # Vecino de abajo
-        state3 = deepcopy(state)
-        pieza3 = tablero[vecino3[1]][vecino3[0]]
-        posPieza3EnState = state.index(pieza3)
-        state3[posPieza3EnState] = 0
-        state3[posCasillaVacia] = pieza3
-        result.append(state3)
-        #print(state3)
-    if(not zero_col-1< 0):
-        #print("Vecino a izquierda")
-        vecino4 = (zero_col-1,zero_row)               # Vecino de la izquierda
-        state4 = deepcopy(state)
-        pieza4 = tablero[vecino4[1]][vecino4[0]]
-        posPieza4EnState = state.index(pieza4)
-        state4[posPieza4EnState] = 0
-        state4[posCasillaVacia] = pieza4
-        result.append(state4)
-        #print(state4)
+        # Primero obtenemos los k crepes de encima de la pila
+        for crepe in state:
+            if(k == 0):
+                break
+            crepesToInvest.append(crepe)
+            copiedState.pop(0)
+            k = k - 1
+            #counter = counter + 1
+
+        # Invertimos esos k crepes
+        #investedCrepes = crepesToInvest.reverse()
+
+        # Los ponemos de nuevo encima de la pila en orden invertido
+        for investedCrepe in crepesToInvest:
+            copiedState.insert(0, investedCrepe)
+
+        result.append(copiedState)
+
+        c = c + 1
 
     return result
 
@@ -210,7 +176,7 @@ def heuristic(state):
 #print(N_Crepes(24))
 #print(N_Crepes(99))
 
-#print(neighbours([0,1,2,3,4,5,6,7,8]))
+print(neighbours([3,2,5,1,6,4]))
 #print(heuristic([1,2,3,4,5,6,7,8,9]))
 #print(heuristic([3,2,5,1,6,4]))
-print(heuristic([3,2,5,1,4,6]))
+#print(heuristic([3,2,5,1,4,6]))
