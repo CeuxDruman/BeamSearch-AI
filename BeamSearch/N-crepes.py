@@ -18,6 +18,9 @@ def N_Crepes(N):
     print("estado_inicial: %s" % (estado_inicial))
 
     #return busqueda_en_haz3(1, estado_inicial, num_Crepes, estado_final)
+    #return busqueda_en_haz3(2, estado_inicial, num_Crepes, estado_final) #30 # Se queda sin memoria
+    #return busqueda_en_haz3(2, estado_inicial, 100, estado_final) #30 # Se estanca en Heur 5/6
+    return busqueda_en_haz3(3, estado_inicial, 100, estado_final) #30 # FUNCIONA: Result: 35 justo antes de quedarse sin memoria (99 de 100)
     #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
     #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
 
