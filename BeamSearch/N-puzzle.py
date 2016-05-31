@@ -33,7 +33,7 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
         SET = []  # the empty set
 
-        print("BEAM: %s" % (BEAM))
+        #print("BEAM: %s" % (BEAM))
 
         # Generate the SET nodes
         for state in BEAM:
@@ -51,7 +51,7 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
                     #print("post-SET: %s" % (SET))
                 contadoor = contadoor + 1
 
-        print("SET sin ordenar: %s" % (SET))
+        #print("SET sin ordenar: %s" % (SET))
 
         ### Order the SET nodes ascending by their Heur.
 
@@ -83,13 +83,15 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
            print("currentState: %s (Heur: %s)" % (currentState,heuristic(currentState)))
            SETOrdered.append(currentState)
            #count = count + 1
+        
+        print("-----------------")
 
         SET = SETOrdered
 
         # OPTION 2
         #SET.sort(key=lambda state: state.heuristic, reverse=False)
 
-        print("SET ordenado: %s" % (SET))
+        #print("SET ordenado: %s" % (SET))
 
         BEAM = []  # the empty set
         g = g + 1
@@ -190,28 +192,58 @@ def heuristic(state):
 
     num_col = 0
     num_row = 0
-    zero_col = -1
-    zero_row = -1
     M = sqrt(len(state))
+    result = 0
+    initial_state = deepcopy(state)
+    initial_state.sort()
 
-    for num in state:  # por cada casilla
+    #print(state)
+    #print(initial_state)
+
+    # Debemos sacar la suma de fila+columna de la pieza en el ESTADO ACTUAL y restarle el mismo cálculo en el ESTADO INICIAL (en valor absoluto)
+
+    for num in state: # ESTADO ACTUAL  # por cada casilla
+
+        current_res = 0
+        initial_res = 0
+
         if num_col == M:  # si el último elemento que se metió estaba al final de una fila
             num_row = num_row + 1  # aumentamos el contador de filas
             num_col = 0  # ponemos el contador de columnas a 0 (la primera)
-        if (num == 0):
-            zero_row = num_row
-            zero_col = num_col
-            break
+
+        current_res = num_row + num_col
+        #print("CURRENT: El %s está en fila %s columna %s" % (num, num_row, num_col))
+
+        initial_num_col = 0
+        initial_num_row = 0
+        for initial_num in initial_state: # ESTADO INICIAL
+            if initial_num_col == M:
+                initial_num_row = initial_num_row + 1
+                initial_num_col = 0
+
+            if(initial_num == num):
+                initial_res = initial_num_row + initial_num_col
+                #print("INITIAL: El %s está en fila %s columna %s" % (initial_num, initial_num_row, initial_num_col))
+                break
+
+            initial_num_col = initial_num_col + 1
+
+        result = result + abs(current_res - initial_res)
+
+        if(result > 0):
+            print("El número %s estaba en la fila %s y columna %s, mientras que en initial_state estaba en fila %s columna %s" % (num, num_row, num_col, initial_num_row, initial_num_col))
+
+
         num_col = num_col + 1  # aumentamos el contador de columnas (para que la siguiente pieza vaya en la casila de su derecha)
 
-    result = zero_row + zero_col
+    #result = zero_row + zero_col
     return result
 
-print(N_Puzzle(8))
+#print(N_Puzzle(8))
 #print(N_Puzzle(15))
 #print(N_Puzzle(24))
 #print(N_Puzzle(99))
 #N_Puzzle(8)
 
 #print(neighbours([0,1,2,3,4,5,6,7,8]))
-#print(heuristic([0,1,2,3,4,5,6,7,8]))
+#print(heuristic([2,1,0,3,4,8,6,7,5]))
