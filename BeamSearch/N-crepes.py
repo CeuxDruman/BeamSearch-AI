@@ -18,8 +18,8 @@ def N_Crepes(N):
     print("estado_inicial: %s" % (estado_inicial))
 
     return busqueda_en_haz3(1, estado_inicial, num_Crepes, estado_final)
-    #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
-    #return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
+    #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
+    #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
 
 
 def busqueda_en_haz3(B, initial_state, memory, goal_state):
@@ -32,7 +32,7 @@ def busqueda_en_haz3(B, initial_state, memory, goal_state):
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
         SET = []  # the empty set
 
-        print("BEAM: %s" % (BEAM))
+        #print("BEAM: %s" % (BEAM))
 
         # Generate the SET nodes
         for state in BEAM:
@@ -50,7 +50,7 @@ def busqueda_en_haz3(B, initial_state, memory, goal_state):
                     #print("post-SET: %s" % (SET))
                 contadoor = contadoor + 1
 
-        print("SET sin ordenar: %s" % (SET))
+        #print("SET sin ordenar: %s" % (SET))
 
         ### Order the SET nodes ascending by their Heur.
 
@@ -82,13 +82,15 @@ def busqueda_en_haz3(B, initial_state, memory, goal_state):
            print("currentState: %s (Heur: %s)" % (currentState,heuristic(currentState)))
            SETOrdered.append(currentState)
            #count = count + 1
+        
+        print("-----------------")
 
         SET = SETOrdered
 
         # OPTION 2
         #SET.sort(key=lambda state: state.heuristic, reverse=False)
 
-        print("SET ordenado: %s" % (SET))
+        #print("SET ordenado: %s" % (SET))
 
         BEAM = []  # the empty set
         g = g + 1
@@ -171,12 +173,14 @@ def heuristic(state):
 
     return h
 
-#print(N_Crepes(8))
-#print(N_Crepes(15))
-#print(N_Crepes(24))
-#print(N_Crepes(99))
+print("Result: %s" % (N_Crepes(9)))
+#print("Result: %s" % (N_Crepes(30)))
+#print("Result: %s" % (N_Crepes(40)))
+#print("Result: %s" % (N_Crepes(50)))
+#print("Result: %s" % (N_Crepes(60)))
+#print("Result: %s" % (N_Crepes(100)))
 
-print(neighbours([3,2,5,1,6,4]))
+#print(neighbours([3,2,5,1,6,4]))
 #print(heuristic([1,2,3,4,5,6,7,8,9]))
 #print(heuristic([3,2,5,1,6,4]))
 #print(heuristic([3,2,5,1,4,6]))
