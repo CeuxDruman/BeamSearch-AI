@@ -17,7 +17,7 @@ def N_Crepes(N):
     print("estado_final: %s" % (estado_final))
     print("estado_inicial: %s" % (estado_inicial))
 
-    return busqueda_en_haz3(1, estado_inicial, num_Crepes, estado_final)
+    #return busqueda_en_haz3(1, estado_inicial, num_Crepes, estado_final)
     #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
     #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
 
@@ -173,8 +173,8 @@ def heuristic(state):
 
     return h
 
-print("Result: %s" % (N_Crepes(9)))
-#print("Result: %s" % (N_Crepes(30)))
+#print("Result: %s" % (N_Crepes(9)))
+print("Result: %s" % (N_Crepes(30)))
 #print("Result: %s" % (N_Crepes(40)))
 #print("Result: %s" % (N_Crepes(50)))
 #print("Result: %s" % (N_Crepes(60)))
