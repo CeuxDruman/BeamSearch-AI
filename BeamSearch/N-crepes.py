@@ -21,8 +21,11 @@ def N_Crepes(N):
     #return busqueda_en_haz3(2, estado_inicial, num_Crepes, estado_final) #30 # Se queda sin memoria
     #return busqueda_en_haz3(2, estado_inicial, 100, estado_final) #30 # Se estanca en Heur 5/6
     return busqueda_en_haz3(3, estado_inicial, 100, estado_final) #30 # FUNCIONA: Result: 35 justo antes de quedarse sin memoria (99 de 100)
+
     #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
     #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
+
+    return busqueda_en_haz3(1, estado_inicial, 100, estado_final)
 
 
 def busqueda_en_haz3(B, initial_state, memory, goal_state):
@@ -43,14 +46,15 @@ def busqueda_en_haz3(B, initial_state, memory, goal_state):
             contadoor = 0
             for successor in neighbours(state):
                 #print("Sucesor %s: %s" % (contadoor, successor))
-                if successor == goal_state:
-                    g = g + 1
-                    return g
-                if successor not in SET:
-                    #print("pre-SET: %s" % (SET))
-                    SET.append(successor)
-                    #print("añadido")
-                    #print("post-SET: %s" % (SET))
+                if successor not in hash_table:
+                    if successor == goal_state:
+                        g = g + 1
+                        return g
+                    if successor not in SET:
+                        #print("pre-SET: %s" % (SET))
+                        SET.append(successor)
+                        #print("añadido")
+                        #print("post-SET: %s" % (SET))
                 contadoor = contadoor + 1
 
         #print("SET sin ordenar: %s" % (SET))

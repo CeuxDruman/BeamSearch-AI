@@ -18,7 +18,9 @@ def N_Puzzle(N):
     print("estado_final: %s" % (estado_final))
     print("estado_inicial: %s" % (estado_inicial))
 
-    return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
+    #return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
+    #return busqueda_en_haz2(1, estado_inicial, 1000, estado_final) # Error out of bound
+    return busqueda_en_haz2(8, estado_inicial, 1000, estado_final)
     #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
     #return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
 
@@ -41,14 +43,15 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
             contadoor = 0
             for successor in neighbours(state):
                 #print("Sucesor %s: %s" % (contadoor, successor))
-                if successor == goal_state:
-                    g = g + 1
-                    return g
-                if successor not in SET:
-                    #print("pre-SET: %s" % (SET))
-                    SET.append(successor)
-                    #print("añadido")
-                    #print("post-SET: %s" % (SET))
+                if successor not in hash_table:
+                    if successor == goal_state:
+                        g = g + 1
+                        return g
+                    if successor not in SET:
+                        #print("pre-SET: %s" % (SET))
+                        SET.append(successor)
+                        #print("añadido")
+                        #print("post-SET: %s" % (SET))
                 contadoor = contadoor + 1
 
         #print("SET sin ordenar: %s" % (SET))
@@ -111,7 +114,19 @@ def busqueda_en_haz2(B, initial_state, memory, goal_state):
             if state not in hash_table:
                 print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
-                    return float('inf')
+                    #return float('inf')
+
+                    # para averiguar si hemos implementado bien el que no se tomen en cuenta nodos ya explorados
+                    lst = hash_table
+                    lst2=[]
+                    for key in lst:
+                        if key not in lst2:
+                            lst2.append(key)
+                        else:
+                            return "Acabó: %s" % (key)
+                    return  "No se repite nada"
+                    
+                    
                 hash_table.append(state)
 
     return g
@@ -204,22 +219,22 @@ def heuristic(state):
 
     for num in state: # ESTADO ACTUAL  # por cada casilla
 
-        current_res = 0
-        initial_res = 0
+        current_res = 1
+        initial_res = 1
 
         if num_col == M:  # si el último elemento que se metió estaba al final de una fila
             num_row = num_row + 1  # aumentamos el contador de filas
-            num_col = 0  # ponemos el contador de columnas a 0 (la primera)
+            num_col = 1  # ponemos el contador de columnas a 0 (la primera)
 
         current_res = num_row + num_col
         #print("CURRENT: El %s está en fila %s columna %s" % (num, num_row, num_col))
 
-        initial_num_col = 0
-        initial_num_row = 0
+        initial_num_col = 1
+        initial_num_row = 1
         for initial_num in initial_state: # ESTADO INICIAL
             if initial_num_col == M:
                 initial_num_row = initial_num_row + 1
-                initial_num_col = 0
+                initial_num_col = 1
 
             if(initial_num == num):
                 initial_res = initial_num_row + initial_num_col
@@ -230,8 +245,8 @@ def heuristic(state):
 
         result = result + abs(current_res - initial_res)
 
-        if(result > 0):
-            print("El número %s estaba en la fila %s y columna %s, mientras que en initial_state estaba en fila %s columna %s" % (num, num_row, num_col, initial_num_row, initial_num_col))
+        #if(result > 0):
+        #    print("El número %s estaba en la fila %s y columna %s, mientras que en initial_state estaba en fila %s columna %s" % (num, num_row, num_col, initial_num_row, initial_num_col))
 
 
         num_col = num_col + 1  # aumentamos el contador de columnas (para que la siguiente pieza vaya en la casila de su derecha)
@@ -239,7 +254,7 @@ def heuristic(state):
     #result = zero_row + zero_col
     return result
 
-#print(N_Puzzle(8))
+print(N_Puzzle(8))
 #print(N_Puzzle(15))
 #print(N_Puzzle(24))
 #print(N_Puzzle(99))
@@ -247,3 +262,4 @@ def heuristic(state):
 
 #print(neighbours([0,1,2,3,4,5,6,7,8]))
 #print(heuristic([2,1,0,3,4,8,6,7,5]))
+#print(heuristic([0, 3, 6, 1, 4, 8, 2, 5, 7]))
