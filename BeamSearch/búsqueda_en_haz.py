@@ -69,9 +69,9 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
 
     return g
 
-import random
+#import random
 
-for i in range(10): print(random.randrange(100)) # Distintos
+#for i in range(10): print(random.randrange(100)) # Distintos
 
-random.seed(365273) # Cambiar semilla para 15 instancias que para 30, 100, etc...
+#random.seed(365273) # Cambiar semilla para 15 instancias que para 30, 100, etc...
                     # No cambiar semilla de un algoritmo a otro de búsqueda en haz

@@ -6,21 +6,39 @@
 from random import shuffle
 from math import sqrt
 from copy import deepcopy
+import random
 
 def N_Puzzle(N):
 
     num_Piezas = N
     num_Casillas = N + 1
-    estado_final = [a for a in range(num_Casillas)]
-    estado_inicial = [a for a in range(num_Casillas)]
-    shuffle(estado_inicial)
+    estado_final = []#[a for a in range(num_Casillas)]
+    estado_inicial = []#[a for a in range(num_Casillas)]
+    #shuffle(estado_inicial)
+
+    random.seed(3452168)
+    
+    for a in range(num_Casillas):
+        rand_num = random.randrange(num_Casillas)
+        while rand_num in estado_inicial:
+            rand_num = random.randrange(num_Casillas)
+        estado_inicial.append(rand_num)
+
+    estado_final = deepcopy(estado_inicial)
+    estado_final.sort()
 
     print("estado_final: %s" % (estado_final))
     print("estado_inicial: %s" % (estado_inicial))
 
     #return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
     #return busqueda_en_haz2(1, estado_inicial, 1000, estado_final) # Error out of bound
-    return busqueda_en_haz2(8, estado_inicial, 1000, estado_final)
+    #return busqueda_en_haz2(8, estado_inicial, 1000, estado_final) # Sigue sin encontrar nada, se queda in memoria
+    #return busqueda_en_haz2(4, estado_inicial, 2000, estado_final)
+    #return busqueda_en_haz2(4, [2,1,0,3,4,5,6,7,8], 2000, estado_final) # Sigue sin encontrar nada, se queda in memoria
+    #return busqueda_en_haz2(4, [1,2,0,3,4,5,6,7,8], 2000, estado_final) # Funciona sin problemas
+    #return busqueda_en_haz2(4, [1,2,5,3,4,0,6,7,8], 2000, estado_final) # Funciona sin problemas
+    return busqueda_en_haz2(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+    return busqueda_en_haz2(1, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
     #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
     #return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
 
@@ -205,8 +223,8 @@ def neighbours(state):
 
 def heuristic(state):
 
-    num_col = 0
-    num_row = 0
+    num_col = 1
+    num_row = 1
     M = sqrt(len(state))
     result = 0
     initial_state = deepcopy(state)
@@ -222,28 +240,28 @@ def heuristic(state):
         current_res = 1
         initial_res = 1
 
-        if num_col == M:  # si el último elemento que se metió estaba al final de una fila
+        if num_col == M+1:  # si el último elemento que se metió estaba al final de una fila
             num_row = num_row + 1  # aumentamos el contador de filas
             num_col = 1  # ponemos el contador de columnas a 0 (la primera)
 
-        current_res = num_row + num_col
+        #current_res = num_row + num_col
         #print("CURRENT: El %s está en fila %s columna %s" % (num, num_row, num_col))
 
         initial_num_col = 1
         initial_num_row = 1
         for initial_num in initial_state: # ESTADO INICIAL
-            if initial_num_col == M:
+            if initial_num_col == M+1:
                 initial_num_row = initial_num_row + 1
                 initial_num_col = 1
 
             if(initial_num == num):
-                initial_res = initial_num_row + initial_num_col
+                #initial_res = initial_num_row + initial_num_col
                 #print("INITIAL: El %s está en fila %s columna %s" % (initial_num, initial_num_row, initial_num_col))
                 break
 
             initial_num_col = initial_num_col + 1
 
-        result = result + abs(current_res - initial_res)
+        result = result + abs(num_row - initial_num_row) + abs(num_col - initial_num_col)
 
         #if(result > 0):
         #    print("El número %s estaba en la fila %s y columna %s, mientras que en initial_state estaba en fila %s columna %s" % (num, num_row, num_col, initial_num_row, initial_num_col))
@@ -263,3 +281,5 @@ print(N_Puzzle(8))
 #print(neighbours([0,1,2,3,4,5,6,7,8]))
 #print(heuristic([2,1,0,3,4,8,6,7,5]))
 #print(heuristic([0, 3, 6, 1, 4, 8, 2, 5, 7]))
+#print(heuristic([0, 2, 1, 3, 4, 5, 6, 7, 8]))
+#print(heuristic([0, 3, 2, 1, 4, 5, 6, 7, 8])) # 4
