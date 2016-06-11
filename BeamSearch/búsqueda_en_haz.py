@@ -16,6 +16,9 @@
 from math import sqrt
 from copy import deepcopy
 
+global heuristic
+global neighbours
+
 def busqueda_en_haz(B, initial_state, memory, goal_state):
     # Initialization
     g = 0  # Cost

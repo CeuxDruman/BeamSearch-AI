@@ -9,148 +9,7 @@ from copy import deepcopy
 import random
 import búsqueda_en_haz as BS
 
-def N_Puzzle(N):
 
-    num_Piezas = N
-    num_Casillas = N + 1
-    estado_final = []#[a for a in range(num_Casillas)]
-    estado_inicial = []#[a for a in range(num_Casillas)]
-    #shuffle(estado_inicial)
-
-    random.seed(3452168)
-    
-    for a in range(num_Casillas):
-        rand_num = random.randrange(num_Casillas)
-        while rand_num in estado_inicial:
-            rand_num = random.randrange(num_Casillas)
-        estado_inicial.append(rand_num)
-
-    estado_final = deepcopy(estado_inicial)
-    estado_final.sort()
-
-    print("estado_final: %s" % (estado_final))
-    print("estado_inicial: %s" % (estado_inicial))
-
-    #return busqueda_en_haz2(1, estado_inicial, num_Casillas, estado_final)
-    #return busqueda_en_haz2(1, estado_inicial, 1000, estado_final) # Error out of bound
-    #return busqueda_en_haz2(8, estado_inicial, 1000, estado_final) # Sigue sin encontrar nada, se queda in memoria
-    #return busqueda_en_haz2(4, estado_inicial, 2000, estado_final)
-    #return busqueda_en_haz2(4, [2,1,0,3,4,5,6,7,8], 2000, estado_final) # Sigue sin encontrar nada, se queda in memoria
-    #return busqueda_en_haz2(4, [1,2,0,3,4,5,6,7,8], 2000, estado_final) # Funciona sin problemas
-    #return busqueda_en_haz2(4, [1,2,5,3,4,0,6,7,8], 2000, estado_final) # Funciona sin problemas
-
-    return BS.busqueda_en_haz(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
-    #return busqueda_en_haz2(1, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
-
-    #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
-    #return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
-
-
-def busqueda_en_haz2(B, initial_state, memory, goal_state):
-    # Initialization
-    g = 0  # Cost
-    hash_table = []  # Memory
-    BEAM = [initial_state]
-
-    # Main loop
-    while len(BEAM) != 0:  # loop until the BEAM contains no nodes
-        SET = []  # the empty set
-
-        #print("BEAM: %s" % (BEAM))
-
-        # Generate the SET nodes
-        for state in BEAM:
-            #print("neighbours: %s" % (neighbours(state)))
-            contadoor = 0
-            for successor in neighbours(state):
-                #print("Sucesor %s: %s" % (contadoor, successor))
-                if successor not in hash_table:
-                    if successor == goal_state:
-                        g = g + 1
-                        return g
-                    if successor not in SET:
-                        #print("pre-SET: %s" % (SET))
-                        SET.append(successor)
-                        #print("añadido")
-                        #print("post-SET: %s" % (SET))
-                contadoor = contadoor + 1
-
-        #print("SET sin ordenar: %s" % (SET))
-
-        ### Order the SET nodes ascending by their Heur.
-
-        # OPTION 1
-        SETOrdered = []
-
-        count = 0
-        currentState = SET[count]
-
-        #while count < len(SET):
-        for a in SET: # Recorremos una vez el SET por cada elemento que contenga
-
-           # Filtramos primero para asegurarnos de que el estado recorrido no esté ya en la lista ordenada
-           cS = deepcopy(currentState)
-           for eachElement in SET:
-               if(cS not in SETOrdered):
-                   break
-               else:
-                    cS = deepcopy(eachElement)
-           currentState = deepcopy(cS)
-
-           # Ahora cogemos el mejor de esta iteración, sin tener en cuenta los ya cogidos en iteraciones anteriores
-
-           #currentState = SET[count]
-           for state in SET:
-               if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
-                   #print("Supuestamente %s no está en %s" % (state, SETOrdered))
-                   currentState = deepcopy(state)
-           print("currentState: %s (Heur: %s)" % (currentState,heuristic(currentState)))
-           SETOrdered.append(currentState)
-           #count = count + 1
-        
-        print("-----------------")
-
-        SET = SETOrdered
-
-        # OPTION 2
-        #SET.sort(key=lambda state: state.heuristic, reverse=False)
-
-        #print("SET ordenado: %s" % (SET))
-
-        BEAM = []  # the empty set
-        g = g + 1
-
-        # Fill the BEAM for the next loop
-        while len(SET) != 0 and B > len(BEAM):
-            count = 0
-            while count < B:
-                #print(SET)
-                if(count > len(SET)-1):
-                    break
-                state = SET.pop(count)
-                BEAM.append(state)
-                count = count + 1
-
-        for state in BEAM:
-            if state not in hash_table:
-                print("HT: %s MM: %s" % (len(hash_table), memory))
-                if len(hash_table) >= memory:
-                    #return float('inf')
-
-                    # para averiguar si hemos implementado bien el que no se tomen en cuenta nodos ya explorados
-                    lst = hash_table
-                    lst2=[]
-                    for key in lst:
-                        if key not in lst2:
-                            lst2.append(key)
-                        else:
-                            return "Acabó: %s" % (key)
-                    return  "No se repite nada"
-                    
-                    
-                hash_table.append(state)
-
-    return g
 
 def neighbours(state):
 
@@ -275,7 +134,46 @@ def heuristic(state):
     #result = zero_row + zero_col
     return result
 
-#print(N_Puzzle(8))
+def N_Puzzle(N):
+
+    num_Piezas = N
+    num_Casillas = N + 1
+    estado_final = []#[a for a in range(num_Casillas)]
+    estado_inicial = []#[a for a in range(num_Casillas)]
+    #shuffle(estado_inicial)
+
+    random.seed(3452168)
+    
+    for a in range(num_Casillas):
+        rand_num = random.randrange(num_Casillas)
+        while rand_num in estado_inicial:
+            rand_num = random.randrange(num_Casillas)
+        estado_inicial.append(rand_num)
+
+    estado_final = deepcopy(estado_inicial)
+    estado_final.sort()
+
+    print("estado_final: %s" % (estado_final))
+    print("estado_inicial: %s" % (estado_inicial))
+
+    BS.heuristic = heuristic
+    BS.neighbours = neighbours
+
+    #return BS.busqueda_en_haz(1, estado_inicial, num_Casillas, estado_final)
+    #return BS.busqueda_en_haz(1, estado_inicial, 1000, estado_final) # Error out of bound
+    #return BS.busqueda_en_haz(8, estado_inicial, 1000, estado_final) # Sigue sin encontrar nada, se queda in memoria
+    #return BS.busqueda_en_haz(4, estado_inicial, 2000, estado_final)
+    #return BS.busqueda_en_haz(4, [2,1,0,3,4,5,6,7,8], 2000, estado_final) # Sigue sin encontrar nada, se queda in memoria
+    #return BS.busqueda_en_haz(4, [1,2,0,3,4,5,6,7,8], 2000, estado_final) # Funciona sin problemas
+    #return BS.busqueda_en_haz(4, [1,2,5,3,4,0,6,7,8], 2000, estado_final) # Funciona sin problemas
+
+    return BS.busqueda_en_haz(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+    #return BS.busqueda_en_haz(1, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+
+    #return BS.busqueda_en_haz(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
+    #return BS.busqueda_en_haz(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
+
+print(N_Puzzle(8))
 #print(N_Puzzle(15))
 #print(N_Puzzle(24))
 #print(N_Puzzle(99))

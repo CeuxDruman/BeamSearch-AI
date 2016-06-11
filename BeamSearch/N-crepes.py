@@ -9,39 +9,6 @@ from copy import deepcopy
 import random
 import búsqueda_en_haz as BS
 
-def N_Crepes(N):
-
-    num_Crepes = N
-    #estado_final = [a for a in range(1,num_Crepes+1)]
-    #estado_inicial = [a for a in range(1,num_Crepes+1)]
-    #shuffle(estado_inicial)
-
-    estado_final = []
-    estado_inicial = []
-
-    random.seed(6452357)
-    
-    for a in range(1,num_Crepes+1):
-        rand_num = random.randrange(1,num_Crepes+1)
-        while rand_num in estado_inicial:
-            rand_num = random.randrange(1,num_Crepes+1)
-        estado_inicial.append(rand_num)
-
-    estado_final = deepcopy(estado_inicial)
-    estado_final.sort()
-
-    print("estado_final: %s" % (estado_final))
-    print("estado_inicial: %s" % (estado_inicial))
-
-    #return busqueda_en_haz3(1, estado_inicial, num_Crepes, estado_final)
-    #return busqueda_en_haz3(2, estado_inicial, num_Crepes, estado_final) #30 # Se queda sin memoria
-    #return busqueda_en_haz3(2, estado_inicial, 100, estado_final) #30 # Se estanca en Heur 5/6
-    #return busqueda_en_haz3(3, estado_inicial, 100, estado_final) #30 # FUNCIONA: Result: 35 justo antes de quedarse sin memoria (99 de 100)
-
-    #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
-    #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
-
-    return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 34 de memoria con coste: 36
 
 def neighbours(state):
 
@@ -100,6 +67,44 @@ def heuristic(state):
         counter = counter + 1
 
     return h
+
+def N_Crepes(N):
+
+    num_Crepes = N
+    #estado_final = [a for a in range(1,num_Crepes+1)]
+    #estado_inicial = [a for a in range(1,num_Crepes+1)]
+    #shuffle(estado_inicial)
+
+    estado_final = []
+    estado_inicial = []
+
+    random.seed(6452357)
+    
+    for a in range(1,num_Crepes+1):
+        rand_num = random.randrange(1,num_Crepes+1)
+        while rand_num in estado_inicial:
+            rand_num = random.randrange(1,num_Crepes+1)
+        estado_inicial.append(rand_num)
+
+    estado_final = deepcopy(estado_inicial)
+    estado_final.sort()
+
+    print("estado_final: %s" % (estado_final))
+    print("estado_inicial: %s" % (estado_inicial))
+
+    BS.heuristic = heuristic
+    BS.neighbours = neighbours
+
+    #return BS.busqueda_en_haz(1, estado_inicial, num_Crepes, estado_final)
+    #return BS.busqueda_en_haz(2, estado_inicial, num_Crepes, estado_final) #30 # Se queda sin memoria
+    #return BS.busqueda_en_haz(2, estado_inicial, 100, estado_final) #30 # Se estanca en Heur 5/6
+    #return BS.busqueda_en_haz(3, estado_inicial, 100, estado_final) #30 # FUNCIONA: Result: 35 justo antes de quedarse sin memoria (99 de 100)
+
+    #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
+    #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
+
+    return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 34 de memoria con coste: 36
+
 
 #print("Result: %s" % (N_Crepes(9)))
 print("Result: %s" % (N_Crepes(30)))
