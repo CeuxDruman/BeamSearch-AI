@@ -76,12 +76,13 @@ global neighbours
 #
 #     currentlayer =
 
-def busqueda_en_haz_backtraking(B, initial_state, memory, goal_state):
+def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
     # Initialization
     g = 0  # Cost
     hash_table = []  # Memory
     hash_table.append(initial_state)
     BEAM = [initial_state]
+    backtracking = False
 
     # Main loop
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes

@@ -176,7 +176,7 @@ def N_Puzzle(N):
     BSBT.heuristic = heuristic
     BSBT.neighbours = neighbours
 
-    return BSBT.busqueda_en_haz_backtraking(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+    return BSBT.busqueda_en_haz_backtracking(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
 
 
 print(N_Puzzle(8))

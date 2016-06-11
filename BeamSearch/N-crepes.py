@@ -8,7 +8,8 @@ from math import sqrt
 from copy import deepcopy
 import random
 import búsqueda_en_haz as BS
-
+import búsqueda_en_haz_con_vuelta_atrás as BSBT
+import búsqueda_en_haz_con_discrepancias as BSD
 
 def neighbours(state):
 
@@ -95,6 +96,9 @@ def N_Crepes(N):
     BS.heuristic = heuristic
     BS.neighbours = neighbours
 
+    BSBT.heuristic = heuristic
+    BSBT.neighbours = neighbours
+
     #return BS.busqueda_en_haz(1, estado_inicial, num_Crepes, estado_final)
     #return BS.busqueda_en_haz(2, estado_inicial, num_Crepes, estado_final) #30 # Se queda sin memoria
     #return BS.busqueda_en_haz(2, estado_inicial, 100, estado_final) #30 # Se estanca en Heur 5/6
@@ -103,7 +107,9 @@ def N_Crepes(N):
     #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
     #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
 
-    return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 34 de memoria con coste: 36
+    #return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 35 de memoria con coste: 36
+
+    return BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 100, estado_final)
 
 
 #print("Result: %s" % (N_Crepes(9)))
