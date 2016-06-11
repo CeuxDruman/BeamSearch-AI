@@ -37,8 +37,10 @@ def N_Puzzle(N):
     #return busqueda_en_haz2(4, [2,1,0,3,4,5,6,7,8], 2000, estado_final) # Sigue sin encontrar nada, se queda in memoria
     #return busqueda_en_haz2(4, [1,2,0,3,4,5,6,7,8], 2000, estado_final) # Funciona sin problemas
     #return busqueda_en_haz2(4, [1,2,5,3,4,0,6,7,8], 2000, estado_final) # Funciona sin problemas
-    return busqueda_en_haz2(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
-    return busqueda_en_haz2(1, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+
+    #return busqueda_en_haz2(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+    #return busqueda_en_haz2(1, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+
     #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
     #return busqueda_en_haz2(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
 
@@ -272,7 +274,7 @@ def heuristic(state):
     #result = zero_row + zero_col
     return result
 
-print(N_Puzzle(8))
+#print(N_Puzzle(8))
 #print(N_Puzzle(15))
 #print(N_Puzzle(24))
 #print(N_Puzzle(99))
@@ -283,3 +285,6 @@ print(N_Puzzle(8))
 #print(heuristic([0, 3, 6, 1, 4, 8, 2, 5, 7]))
 #print(heuristic([0, 2, 1, 3, 4, 5, 6, 7, 8]))
 #print(heuristic([0, 3, 2, 1, 4, 5, 6, 7, 8])) # 4
+#print(heuristic([7,4,6,2,1,8,0,3,5])) #Debe salir 18
+#print(heuristic([5,6,2,1,3,7,8,0,4])) #Debe salir 18
+
