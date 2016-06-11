@@ -23,6 +23,7 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
     # Initialization
     g = 0  # Cost
     hash_table = []  # Memory
+    hash_table.append(initial_state)
     BEAM = [initial_state]
 
     # Main loop
@@ -49,6 +50,9 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                 contadoor = contadoor + 1
 
         # print("SET sin ordenar: %s" % (SET))
+
+        if len(SET) == 0:
+            break
 
         ### Order the SET nodes ascending by their Heur.
 
@@ -85,9 +89,6 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
 
         SET = SETOrdered
 
-        # OPTION 2
-        # SET.sort(key=lambda state: state.heuristic, reverse=False)
-
         # print("SET ordenado: %s" % (SET))
 
         BEAM = []  # the empty set
@@ -108,21 +109,21 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
             if state not in hash_table:
                 print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
-                    # return float('inf')
+                    return float('inf')
 
                     # para averiguar si hemos implementado bien el que no se tomen en cuenta nodos ya explorados
-                    lst = hash_table
-                    lst2 = []
-                    for key in lst:
-                        if key not in lst2:
-                            lst2.append(key)
-                        else:
-                            return "Acabó: %s" % (key)
-                    return "No se repite nada"
+                    # lst = hash_table
+                    # lst2 = []
+                    # for key in lst:
+                    #     if key not in lst2:
+                    #         lst2.append(key)
+                    #     else:
+                    #         return "Acabó: %s" % (key)
+                    # return "No se repite nada"
 
                 hash_table.append(state)
 
-    return g
+    return "Hemos llegado al final del árbol. Coste: %s" % (g)
 
 #import random
 

@@ -8,8 +8,8 @@ from math import sqrt
 from copy import deepcopy
 import random
 import búsqueda_en_haz as BS
-
-
+import búsqueda_en_haz_con_vuelta_atrás as BSBT
+import búsqueda_en_haz_con_discrepancias as BSD
 
 def neighbours(state):
 
@@ -167,11 +167,17 @@ def N_Puzzle(N):
     #return BS.busqueda_en_haz(4, [1,2,0,3,4,5,6,7,8], 2000, estado_final) # Funciona sin problemas
     #return BS.busqueda_en_haz(4, [1,2,5,3,4,0,6,7,8], 2000, estado_final) # Funciona sin problemas
 
-    return BS.busqueda_en_haz(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+    #return BS.busqueda_en_haz(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
     #return BS.busqueda_en_haz(1, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
 
     #return BS.busqueda_en_haz(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
     #return BS.busqueda_en_haz(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
+
+    BSBT.heuristic = heuristic
+    BSBT.neighbours = neighbours
+
+    return BSBT.busqueda_en_haz_backtraking(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+
 
 print(N_Puzzle(8))
 #print(N_Puzzle(15))
