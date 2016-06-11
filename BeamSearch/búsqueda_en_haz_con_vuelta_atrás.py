@@ -83,10 +83,12 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
     hash_table.append(initial_state)
     BEAM = [initial_state]
     backtracking = False
+    SET = []
 
     # Main loop
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
-        SET = []  # the empty set
+        print("Otra vez")
+        #SET = []  # the empty set
 
         # print("BEAM: %s" % (BEAM))
 
@@ -115,6 +117,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
             # print("SET sin ordenar: %s" % (SET))
 
             if len(SETtemp) == 0:
+                print("SET: %s" % (SET))
                 backtracking = True
                 continue
             else:
