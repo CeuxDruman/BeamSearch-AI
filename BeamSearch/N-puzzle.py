@@ -7,6 +7,7 @@ from random import shuffle
 from math import sqrt
 from copy import deepcopy
 import random
+import búsqueda_en_haz as BS
 
 def N_Puzzle(N):
 
@@ -38,7 +39,7 @@ def N_Puzzle(N):
     #return busqueda_en_haz2(4, [1,2,0,3,4,5,6,7,8], 2000, estado_final) # Funciona sin problemas
     #return busqueda_en_haz2(4, [1,2,5,3,4,0,6,7,8], 2000, estado_final) # Funciona sin problemas
 
-    #return busqueda_en_haz2(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+    return BS.busqueda_en_haz(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
     #return busqueda_en_haz2(1, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
 
     #return busqueda_en_haz2(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)

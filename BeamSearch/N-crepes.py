@@ -7,6 +7,7 @@ from random import shuffle
 from math import sqrt
 from copy import deepcopy
 import random
+import búsqueda_en_haz as BS
 
 def N_Crepes(N):
 
@@ -40,102 +41,7 @@ def N_Crepes(N):
     #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
     #return busqueda_en_haz3(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
 
-    return busqueda_en_haz3(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 34 de memoria con coste: 36
-
-
-def busqueda_en_haz3(B, initial_state, memory, goal_state):
-    # Initialization
-    g = 0  # Cost
-    hash_table = []  # Memory
-    BEAM = [initial_state]
-
-    # Main loop
-    while len(BEAM) != 0:  # loop until the BEAM contains no nodes
-        SET = []  # the empty set
-
-        #print("BEAM: %s" % (BEAM))
-
-        # Generate the SET nodes
-        for state in BEAM:
-            #print("neighbours: %s" % (neighbours(state)))
-            contadoor = 0
-            for successor in neighbours(state):
-                #print("Sucesor %s: %s" % (contadoor, successor))
-                if successor not in hash_table:
-                    if successor == goal_state:
-                        g = g + 1
-                        return g
-                    if successor not in SET:
-                        #print("pre-SET: %s" % (SET))
-                        SET.append(successor)
-                        #print("añadido")
-                        #print("post-SET: %s" % (SET))
-                contadoor = contadoor + 1
-
-        #print("SET sin ordenar: %s" % (SET))
-
-        ### Order the SET nodes ascending by their Heur.
-
-        # OPTION 1
-        SETOrdered = []
-
-        count = 0
-        currentState = SET[count]
-
-        #while count < len(SET):
-        for a in SET: # Recorremos una vez el SET por cada elemento que contenga
-
-           # Filtramos primero para asegurarnos de que el estado recorrido no esté ya en la lista ordenada
-           cS = deepcopy(currentState)
-           for eachElement in SET:
-               if(cS not in SETOrdered):
-                   break
-               else:
-                    cS = deepcopy(eachElement)
-           currentState = deepcopy(cS)
-
-           # Ahora cogemos el mejor de esta iteración, sin tener en cuenta los ya cogidos en iteraciones anteriores
-
-           #currentState = SET[count]
-           for state in SET:
-               if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
-                   #print("Supuestamente %s no está en %s" % (state, SETOrdered))
-                   currentState = deepcopy(state)
-           print("currentState: %s (Heur: %s)" % (currentState,heuristic(currentState)))
-           SETOrdered.append(currentState)
-           #count = count + 1
-        
-        print("-----------------")
-
-        SET = SETOrdered
-
-        # OPTION 2
-        #SET.sort(key=lambda state: state.heuristic, reverse=False)
-
-        #print("SET ordenado: %s" % (SET))
-
-        BEAM = []  # the empty set
-        g = g + 1
-
-        # Fill the BEAM for the next loop
-        while len(SET) != 0 and B > len(BEAM):
-            count = 0
-            while count < B:
-                #print(SET)
-                if(count > len(SET)-1):
-                    break
-                state = SET.pop(count)
-                BEAM.append(state)
-                count = count + 1
-
-        for state in BEAM:
-            if state not in hash_table:
-                print("HT: %s MM: %s" % (len(hash_table), memory))
-                if len(hash_table) >= memory:
-                    return float('inf')
-                hash_table.append(state)
-
-    return g
+    return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 34 de memoria con coste: 36
 
 def neighbours(state):
 
