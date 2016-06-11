@@ -82,8 +82,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
     hash_table = []  # Memory
     hash_table.append(initial_state)
     BEAM = [initial_state]
-    backtracking = False
+    leafBacktracking = False
     SET = []
+    nBacks = 0
 
     # Main loop
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
@@ -94,13 +95,13 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
         # Generate the SET nodes
 
-        if not backtracking:
+        if not leafBacktracking:
 
             SETtemp = []
 
             for state in BEAM:
                 # print("neighbours: %s" % (neighbours(state)))
-                contadoor = 0
+                #count1 = 0
                 for successor in neighbours(state):
                     # print("Sucesor %s: %s" % (contadoor, successor))
                     if successor not in hash_table:
@@ -112,15 +113,38 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                             SETtemp.append(successor)
                             # print("añadido")
                             # print("post-SET: %s" % (SET))
-                    contadoor = contadoor + 1
+                    #count1 = count1 + 1
 
             # print("SET sin ordenar: %s" % (SET))
 
             if len(SETtemp) == 0:
-                print("SET: %s" % (SET))
-                backtracking = True
-                continue
+
+                # Comprobamos que hay más hojas para recorrer en su nivel (hermanos)
+                hayMasElementos = False
+                for s in SET:
+                    if s not in hash_table:
+                        hayMasElementos = True
+
+                if hayMasElementos:
+                    print("------------------------------- BACKTRACKING HACIA HERMANO ----------------------------------")
+                    print("SET: %s" % (SET))
+                    leafBacktracking = True
+                    nBacks = 0
+                    continue
+                else:
+                    print("------------------------------- BACKTRACKING HACIA PADRE ----------------------------------")
+                    nBacks = nBacks + 1
+                    BEAM = []
+                    count2 = 1
+                    index = B*nBacks
+                    while count2 <= B:
+                        BEAM.append(hash_table[len(hash_table)-1-index])
+                        count2 = count2 + 1
+                        index = index - 1
+                    print("BEAM: %s" % (BEAM))
+                    continue
             else:
+                nBacks = 0
                 SET = deepcopy(SETtemp)
 
             ### Order the SET nodes ascending by their Heur.
@@ -128,8 +152,8 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
             # OPTION 1
             SETOrdered = []
 
-            count = 0
-            currentState = SET[count]
+            #count3 = 0
+            currentState = SET[0]
 
             # while count < len(SET):
             for a in SET:  # Recorremos una vez el SET por cada elemento que contenga
@@ -165,18 +189,18 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
         # Fill the BEAM for the next loop
         while len(SET) != 0 and B > len(BEAM):
-            count = 0
-            while count < B:
+            count4 = 0
+            while count4 < B:
                 # print(SET)
-                if (count > len(SET) - 1):
+                if (count4 > len(SET) - 1):
                     break
-                state = SET.pop(count)
-                if backtracking:
+                state = SET.pop(count4)
+                if leafBacktracking:
                     if state not in hash_table:
                         BEAM.append(state)
                 else:
                     BEAM.append(state)
-                count = count + 1
+                count4 = count4 + 1
 
         for state in BEAM:
             if state not in hash_table:
@@ -196,7 +220,18 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
                 hash_table.append(state)
 
-        backtracking = False
+        leafBacktracking = False
+
+        if len(BEAM) == 0:
+            print("------------------------------- BACKTRACKING HACIA PADRE ----------------------------------")
+            nBacks = nBacks + 1
+            BEAM = []
+            count5 = 1
+            index = B*nBacks
+            while count5 <= B:
+                BEAM.append(hash_table[len(hash_table)-1-index])
+                count5 = count5 + 1
+                index = index - 1
 
     
     return "Hemos llegado al final del árbol. Coste: %s" % (g)
