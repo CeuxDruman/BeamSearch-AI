@@ -106,8 +106,8 @@ def N_Crepes(N):
     return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 34 de memoria con coste: 36
 
 
-print("Result: %s" % (N_Crepes(9)))
-#print("Result: %s" % (N_Crepes(30)))
+#print("Result: %s" % (N_Crepes(9)))
+print("Result: %s" % (N_Crepes(30)))
 #print("Result: %s" % (N_Crepes(40)))
 #print("Result: %s" % (N_Crepes(50)))
 #print("Result: %s" % (N_Crepes(60)))

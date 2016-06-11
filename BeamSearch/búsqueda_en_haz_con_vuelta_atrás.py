@@ -82,77 +82,82 @@ def busqueda_en_haz_backtraking(B, initial_state, memory, goal_state):
     hash_table = []  # Memory
     hash_table.append(initial_state)
     BEAM = [initial_state]
-    backtraking = False
 
     # Main loop
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
         SET = []  # the empty set
 
         # print("BEAM: %s" % (BEAM))
-        # if not backtraking:
+
         # Generate the SET nodes
-        for state in BEAM:
-            # print("neighbours: %s" % (neighbours(state)))
-            contadoor = 0
-            for successor in neighbours(state):
-                # print("Sucesor %s: %s" % (contadoor, successor))
-                if successor not in hash_table:
-                    if successor == goal_state:
-                        g = g + 1
-                        return g
-                    if successor not in SET:
-                        # print("pre-SET: %s" % (SET))
-                        SET.append(successor)
-                        # print("añadido")
-                        # print("post-SET: %s" % (SET))
-                contadoor = contadoor + 1
 
-        # print("SET sin ordenar: %s" % (SET))
+        if not backtracking:
 
-        if len(SET) == 0:
-            break
+            SETtemp = []
 
-        ### Order the SET nodes ascending by their Heur.
+            for state in BEAM:
+                # print("neighbours: %s" % (neighbours(state)))
+                contadoor = 0
+                for successor in neighbours(state):
+                    # print("Sucesor %s: %s" % (contadoor, successor))
+                    if successor not in hash_table:
+                        if successor == goal_state:
+                            g = g + 1
+                            return g
+                        if successor not in SETtemp:
+                            # print("pre-SET: %s" % (SET))
+                            SETtemp.append(successor)
+                            # print("añadido")
+                            # print("post-SET: %s" % (SET))
+                    contadoor = contadoor + 1
 
-        # OPTION 1
-        SETOrdered = []
+            # print("SET sin ordenar: %s" % (SET))
 
-        count = 0
-        currentState = SET[count]
+            if len(SETtemp) == 0:
+                backtracking = True
+                continue
+            else:
+                SET = deepcopy(SETtemp)
 
-        # while count < len(SET):
-        for a in SET:  # Recorremos una vez el SET por cada elemento que contenga
+            ### Order the SET nodes ascending by their Heur.
 
-            # Filtramos primero para asegurarnos de que el estado recorrido no esté ya en la lista ordenada
-            cS = deepcopy(currentState)
-            for eachElement in SET:
-                if (cS not in SETOrdered):
-                    break
-                else:
-                    cS = deepcopy(eachElement)
-            currentState = deepcopy(cS)
+            # OPTION 1
+            SETOrdered = []
 
-            # Ahora cogemos el mejor de esta iteración, sin tener en cuenta los ya cogidos en iteraciones anteriores
+            count = 0
+            currentState = SET[count]
 
-            # currentState = SET[count]
-            for state in SET:
-                if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
-                    # print("Supuestamente %s no está en %s" % (state, SETOrdered))
-                    currentState = deepcopy(state)
-            print("currentState: %s (Heur: %s)" % (currentState, heuristic(currentState)))
-            SETOrdered.append(currentState)
-            # count = count + 1
+            # while count < len(SET):
+            for a in SET:  # Recorremos una vez el SET por cada elemento que contenga
 
-        print("-----------------")
+                # Filtramos primero para asegurarnos de que el estado recorrido no esté ya en la lista ordenada
+                cS = deepcopy(currentState)
+                for eachElement in SET:
+                    if (cS not in SETOrdered):
+                        break
+                    else:
+                        cS = deepcopy(eachElement)
+                currentState = deepcopy(cS)
 
-        SET = SETOrdered
+                # Ahora cogemos el mejor de esta iteración, sin tener en cuenta los ya cogidos en iteraciones anteriores
+
+                # currentState = SET[count]
+                for state in SET:
+                    if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
+                        # print("Supuestamente %s no está en %s" % (state, SETOrdered))
+                        currentState = deepcopy(state)
+                print("currentState: %s (Heur: %s)" % (currentState, heuristic(currentState)))
+                SETOrdered.append(currentState)
+                # count = count + 1
+
+            print("-----------------")
+
+            SET = SETOrdered
 
         # print("SET ordenado: %s" % (SET))
 
-        print("BEAM ANTES: %s" % (BEAM))
         BEAM = []  # the empty set
         g = g + 1
-
 
         # Fill the BEAM for the next loop
         while len(SET) != 0 and B > len(BEAM):
@@ -162,53 +167,18 @@ def busqueda_en_haz_backtraking(B, initial_state, memory, goal_state):
                 if (count > len(SET) - 1):
                     break
                 state = SET.pop(count)
-                BEAM.append(state)
+                if backtracking:
+                    if state not in hash_table:
+                        BEAM.append(state)
+                else:
+                    BEAM.append(state)
                 count = count + 1
-
-        backtraking = False
-
-        BEAMtemp = []
 
         for state in BEAM:
             if state not in hash_table:
                 print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
-
-                    # print(SET)
-                    # print(hash_table)
-
-                    SETtemp = []
-
-                    #SET = list(set(SET)-set(hash_table))
-
-                    # for x in SET:
-                    #     notContained = False
-                    #     for y in hash_table:
-                    #         if x is not y:
-                    #             notContained = True
-                    #     if notContained:
-                    #         SETtemp.append(x)
-                    #
-                    # SET = SETtemp
-
-                    BEAM = []
-
-                    count = 0
-                    index = len(hash_table) - 1
-                    while count < B:
-                        BEAM.append(hash_table[index])
-                        index = index - 1
-                        count = count + 1
-
-                    print("BEAM DESPUÉS: %s" % (BEAM))
-                    backtraking = True
-                    g = g - 1
-                    return "Finish"
-                    break
-
-
-
-                    # return float('inf')
+                    return float('inf')
 
                     # para averiguar si hemos implementado bien el que no se tomen en cuenta nodos ya explorados
                     # lst = hash_table
@@ -220,14 +190,9 @@ def busqueda_en_haz_backtraking(B, initial_state, memory, goal_state):
                     #         return "Acabó: %s" % (key)
                     # return "No se repite nada"
 
+                hash_table.append(state)
 
+        backtracking = False
 
-                BEAMtemp.append(state)
-
-        if not backtraking:
-            for b in BEAMtemp:
-                hash_table.append(b)
-
-        print("BEAM ANTERIOR: %s" % (BEAM))
-
+    
     return "Hemos llegado al final del árbol. Coste: %s" % (g)
