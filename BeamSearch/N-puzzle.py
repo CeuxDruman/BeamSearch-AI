@@ -179,7 +179,7 @@ def N_Puzzle(N):
     BSBT.neighbours = neighbours
 
     #return BSBT.busqueda_en_haz_backtracking(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final)
-    return BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 2000, estado_final)
+    return BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 200, estado_final)
 
 #print(N_Puzzle(3))
 print(N_Puzzle(8))
