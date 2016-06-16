@@ -105,7 +105,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
         if not leafBacktracking:
 
-            SETtemp = []
+            #SETtemp = []
 
             for state in BEAM:
                 # print("neighbours: %s" % (neighbours(state)))
@@ -116,16 +116,16 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                         if successor == goal_state:
                             g = g + 1
                             return g
-                        if successor not in SETtemp:
+                        if successor not in SET:
                             # print("pre-SET: %s" % (SET))
-                            SETtemp.append(successor)
+                            SET.append(successor)
                             # print("añadido")
                             # print("post-SET: %s" % (SET))
                     #count1 = count1 + 1
 
             # print("SET sin ordenar: %s" % (SET))
 
-            if len(SETtemp) == 0:
+            if len(SET) == 0:
 
                 # Comprobamos que hay más hojas para recorrer en su nivel (hermanos)
                 hayMasElementos = False
@@ -160,7 +160,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                 #continue
             else:
                 nBacks = 0
-                SET = deepcopy(SETtemp)
+                #SET = deepcopy(SETtemp)
 
             ### Order the SET nodes ascending by their Heur.
 
