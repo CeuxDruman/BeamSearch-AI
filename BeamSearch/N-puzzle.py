@@ -186,7 +186,7 @@ def N_Puzzle(N):
     BSD.heuristic = heuristic
     BSD.neighbours = neighbours
 
-    return BSD.BULB(estado_inicial, estado_final, 1, 100)
+    return BSD.BULB(estado_inicial, estado_final, 5, 1000)
 
 
 

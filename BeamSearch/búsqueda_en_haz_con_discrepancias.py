@@ -17,6 +17,7 @@ def BULB(initial_state, goal_state, B, memory):
 
     # print("Parada BULB 1")
     while limitWhile != 0:
+        print("^^^^^^^^^^")
         print("Discrepancia: %s" % (discrepancies))
         # print("Parada BULB 2")
         pathlength = BULBprobe(0, discrepancies, B, hash_table, hash_levels, goal_state, memory)
@@ -29,6 +30,9 @@ def BULB(initial_state, goal_state, B, memory):
         # print("Parada BULB 5")
 
 def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memory):
+
+    # print("Hash Table: %s" % (hash_table))
+    # print("Hash Levels: %s" % (hash_levels))
 
     # print("Parada probe 1")
     [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory)
