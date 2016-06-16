@@ -13,6 +13,7 @@ def BULB(initial_state, goal_state, heuristic, B, memory):
     discrepancies = 0
     state_level = 0;
     hash_table = [initial_state]
+    hash_level_index = [0]
 
     while True:
         pathlength = BULBprobe(0, discrepancies, heuristic, B, hash_table, goal_state, memory)
@@ -20,9 +21,9 @@ def BULB(initial_state, goal_state, heuristic, B, memory):
             return pathlength
         discrepancies = discrepancies + 1
 
-def BULBprobe(depth, discrepancies, heuristic, B, hash_table, goal_state, memory):
+def BULBprobe(depth, discrepancies, heuristic, B, hash_table, hash_levels, goal_state, memory):
 
-    [SLICE, value, index] = nextSlice(depth, 0, heuristic, B, hash_table, goal_state, memory)
+    [SLICE, value, index] = nextSlice(depth, 0, heuristic, B, hash_table, hash_levels, goal_state, memory)
 
     if value >= 0:
         return value
@@ -30,7 +31,7 @@ def BULBprobe(depth, discrepancies, heuristic, B, hash_table, goal_state, memory
     if discrepancies == 0:
         if SLICE is []:
             return float('inf')
-        pathlenght = BULBprobe(depth+1, 0, heuristic, B, hash_table, goal_state, memory)
+        pathlenght = BULBprobe(depth+1, 0, heuristic, B, hash_table, hash_levels, goal_state, memory)
         for s in SLICE:
             hash_table.remove(s)
         return pathlenght
@@ -39,7 +40,7 @@ def BULBprobe(depth, discrepancies, heuristic, B, hash_table, goal_state, memory
             for s in SLICE:
                 hash_table.remove(s)
         while True:
-            [SLICE, value, index] = nextSlice(depth, index, heuristic, B, hash_table, goal_state, memory)
+            [SLICE, value, index] = nextSlice(depth, index, heuristic, B, hash_table, hash_levels, goal_state, memory)
             if value >= 0:
                 if value < float('inf'):
                     return value
@@ -47,26 +48,37 @@ def BULBprobe(depth, discrepancies, heuristic, B, hash_table, goal_state, memory
                     break
             if SLICE is []:
                 continue
-            pathlenght = BULBprobe(depth+1, discrepancies-1, heuristic, B, hash_table, goal_state, memory)
+            pathlenght = BULBprobe(depth+1, discrepancies-1, heuristic, B, hash_table, hash_levels, goal_state, memory)
             for s in SLICE:
                 hash_table.remove(s)
             if pathlenght < float('inf'):
                 return pathlenght
-        [SLICE, value, index] = nextSlice(depth, 0, heuristic, B, hash_table, goal_state, memory)
+        [SLICE, value, index] = nextSlice(depth, 0, heuristic, B, hash_table, hash_levels, goal_state, memory)
         if value >= 0:
             return value
         if SLICE is []:
             return float('inf')
-        pathlenght = BULBprobe(depth+1, discrepancies, heuristic, B, hash_table, goal_state, memory)
+        pathlenght = BULBprobe(depth+1, discrepancies, heuristic, B, hash_table, hash_levels, goal_state, memory)
         for s in SLICE:
             hash_table.remove(s)
         return pathlenght
 
-def nextSlice(depth, index, heuristic, B, hash_table, goal_state, memory):
+def nextSlice(depth, index, heuristic, B, hash_table, hash_levels, goal_state, memory):
 
     # g() obtener el nivel del estado: Sacar de la memoria el bloque que está en el nivel s
 
     ## currentlayer := {s in hash_table | g(s) = depth}
+
+    currentlayer = []
+    pos_in_list = 0
+
+    # g() obtener el nivel del estado: Sacar de la memoria el bloque que está en el nivel s
+    for i in hash_levels:
+        if i == depth:
+            currentlayer.append(hash_table[pos_in_list])
+        pos_in_list = pos_in_list + 1
+
+
     SUCCS = generateNewSuccessor(currentlayer, hash_table)
     if SUCCS is [] or index == len(SUCCS):
         return [[], float('inf'), -1]
