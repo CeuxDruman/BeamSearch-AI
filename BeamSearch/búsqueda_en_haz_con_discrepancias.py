@@ -1,6 +1,9 @@
 # BeamSearch w/ Discrepancies from Artificial Intelligence Subject
 # Gastar la discrepancias lo antes posible
 
+from copy import deepcopy
+from math import sqrt
+
 global heuristic
 global neighbours
 
@@ -61,10 +64,10 @@ def BULBprobe(depth, discrepancies, heuristic, B, hash_table, goal_state, memory
 
 def nextSlice(depth, index, heuristic, B, hash_table, goal_state, memory):
 
-    # g() obtener el nivel del estado: Sacar de la memoria el bloque que está en el nivel s # Linea 43: depth + 1
+    # g() obtener el nivel del estado: Sacar de la memoria el bloque que está en el nivel s
 
     ## currentlayer := {s in hash_table | g(s) = depth}
-    SUCCS = generateNewSuccessor(currentlayer, heuristic, hash_table)
+    SUCCS = generateNewSuccessor(currentlayer, hash_table)
     if SUCCS is [] or index == len(SUCCS):
         return [[], float('inf'), -1]
     if goal_state in SUCCS:
@@ -73,6 +76,7 @@ def nextSlice(depth, index, heuristic, B, hash_table, goal_state, memory):
     i = index;
     while(i < len(SUCCS) and len(SLICE) < B):
         if(SUCCS[i] not in hash_table):
+            #  Linea 43: depth + 1 (En el PDF hay una errata, no le suma 1)
             ## g(SUCCS[i]) := depth + 1
             SLICE.append(SUCCS[i])
             hash_table.append(SUCCS[i])
@@ -83,16 +87,38 @@ def nextSlice(depth, index, heuristic, B, hash_table, goal_state, memory):
         i = i + 1
     return [SLICE, -1, i]
 
-def generateNewSuccessor(stateset, heuristic, hash_table):
+# Funciona bien.
+# Comprobado con un BEAM de tamaño 1 y 2
+# Comprobado con hash_table vacío y con varios estados incluidos
+def generateNewSuccessor(stateset, hash_table):
 
-    index = 0
-    SUCCS = []
+    UnsortedSUCCS = []
+
+    # Generate the SET nodes
     for state in stateset:
-        for successor in state:
+        contadoor = 0
+        for successor in neighbours(state):
             if successor not in hash_table:
-                SUCCS[index] = successor;
-                index = index + 1
+                if successor not in UnsortedSUCCS:
+                    UnsortedSUCCS.append(successor)
+            contadoor = contadoor + 1
 
-    # Sort states in SUCCS in order of increasing heuristic values
+    ## Sort states in SUCCS in order of increasing heuristic values
+    SUCCS = []
+    currentState = UnsortedSUCCS[0]
+
+    for a in UnsortedSUCCS:
+        cS = deepcopy(currentState)
+        for eachElelement in UnsortedSUCCS:
+            if cS not in SUCCS:
+                break
+            else:
+                cS = deepcopy(eachElelement)
+        currentState = deepcopy(cS)
+
+        for state in UnsortedSUCCS:
+            if (heuristic(state) < heuristic(currentState)) and (state not in SUCCS):
+                currentState = deepcopy(state)
+        SUCCS.append(currentState)
 
     return SUCCS
