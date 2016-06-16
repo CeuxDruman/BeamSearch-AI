@@ -155,8 +155,8 @@ def N_Puzzle(N):
     estado_final = deepcopy(estado_inicial)
     estado_final.sort()
 
-    print("estado_final: %s" % (estado_final))
     print("estado_inicial: %s" % (estado_inicial))
+    print("estado_final: %s" % (estado_final))
 
     BS.heuristic = heuristic
     BS.neighbours = neighbours
@@ -191,7 +191,7 @@ def N_Puzzle(N):
     BSD.heuristic = heuristic
     BSD.neighbours = neighbours
 
-    #return BSD.BULB(estado_inicial, estado_final, heuristic, 1, 1000)
+    # return BSD.BULB(estado_inicial, estado_final, 1, 100)
 
 
 
