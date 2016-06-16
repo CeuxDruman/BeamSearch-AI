@@ -174,12 +174,13 @@ def N_Puzzle(N):
     #return BS.busqueda_en_haz(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
     #return BS.busqueda_en_haz(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
     #return BS.busqueda_en_haz(1, estado_inicial, 2000, estado_final)
+    #return BS.busqueda_en_haz(2, estado_inicial, 2000, estado_final)
 
     BSBT.heuristic = heuristic
     BSBT.neighbours = neighbours
 
     #return BSBT.busqueda_en_haz_backtracking(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final)
-    return BSBT.busqueda_en_haz_backtracking(2, estado_inicial, 700, estado_final)
+    return BSBT.busqueda_en_haz_backtracking(2, estado_inicial, 20000, estado_final)
 
     BSD.heuristic = heuristic
     BSD.neighbours = neighbours

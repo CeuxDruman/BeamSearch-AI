@@ -185,7 +185,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                     if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
                         # print("Supuestamente %s no está en %s" % (state, SETOrdered))
                         currentState = deepcopy(state)
-                print("currentState: %s (Heur: %s)" % (currentState, heuristic(currentState)))
+                print("sucessor: %s (Heur: %s)" % (currentState, heuristic(currentState)))
                 SETOrdered.append(currentState)
                 # count = count + 1
 
@@ -205,7 +205,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                 # print(SET)
                 if (count4 > len(SET) - 1):
                     break
-                state = SET.pop(count4)
+                state = SET.pop(0)
                 if leafBacktracking:
                     if state not in hash_table:
                         BEAM.append(state)
@@ -214,6 +214,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                 count4 = count4 + 1
 
         statesToRemove = 0
+        print("BEAM: %s" % (BEAM))
 
         for state in BEAM:
             if state not in hash_table:
@@ -235,6 +236,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                     # return "No se repite nada"
 
                 hash_table.append(state)
+                print("A memoria: %s" % (state))
                 hash_levels.append(level)
                 print("level: %s" % (level))
                 statesToRemove = statesToRemove + 1

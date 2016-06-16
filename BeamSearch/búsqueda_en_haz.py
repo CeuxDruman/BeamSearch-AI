@@ -28,6 +28,7 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
 
     # Main loop
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
+        print("-----------------")
         SET = []  # the empty set
 
         # print("BEAM: %s" % (BEAM))
@@ -81,11 +82,11 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                 if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
                     # print("Supuestamente %s no está en %s" % (state, SETOrdered))
                     currentState = deepcopy(state)
-            print("currentState: %s (Heur: %s)" % (currentState, heuristic(currentState)))
+            print("sucessor: %s (Heur: %s)" % (currentState, heuristic(currentState)))
             SETOrdered.append(currentState)
             # count = count + 1
 
-        print("-----------------")
+
 
         SET = SETOrdered
 
@@ -101,9 +102,11 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                 # print(SET)
                 if (count > len(SET) - 1):
                     break
-                state = SET.pop(count)
+                state = SET.pop(0)
                 BEAM.append(state)
                 count = count + 1
+
+        print("BEAM: %s" % (BEAM))
 
         for state in BEAM:
             if state not in hash_table:
@@ -122,6 +125,7 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                     # return "No se repite nada"
 
                 hash_table.append(state)
+                print("A memoria: %s" % (state))
 
     return "Hemos llegado al final del árbol. Coste: %s" % (g)
 
