@@ -2,7 +2,6 @@
 # Gastar la discrepancias lo antes posible
 
 from copy import deepcopy
-from math import sqrt
 
 global heuristic
 global neighbours
@@ -13,13 +12,15 @@ def BULB(initial_state, goal_state, B, memory):
     discrepancies = 0
     state_level = 0;
     hash_table = [initial_state]
-    hash_level_index = [0]
+    hash_levels = [0]
+    limitWhile = 1000000
 
-    while True:
-        pathlength = BULBprobe(0, discrepancies, B, hash_table, goal_state, memory)
+    while limitWhile != 0:
+        pathlength = BULBprobe(0, discrepancies, B, hash_table, hash_levels, goal_state, memory)
         if pathlength < float('inf'):
             return pathlength
         discrepancies = discrepancies + 1
+        limitWhile = limitWhile - 1
 
 def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memory):
 
@@ -118,7 +119,9 @@ def generateNewSuccessor(stateset, hash_table):
             contadoor = contadoor + 1
 
     ## Sort states in SUCCS in order of increasing heuristic values
+
     SUCCS = []
+    print("UnsortedSUCCS: %s" % (UnsortedSUCCS))
     currentState = UnsortedSUCCS[0]
 
     for a in UnsortedSUCCS:
@@ -134,5 +137,7 @@ def generateNewSuccessor(stateset, hash_table):
             if (heuristic(state) < heuristic(currentState)) and (state not in SUCCS):
                 currentState = deepcopy(state)
         SUCCS.append(currentState)
+
+    print("SUCCS: %s" % (SUCCS))
 
     return SUCCS
