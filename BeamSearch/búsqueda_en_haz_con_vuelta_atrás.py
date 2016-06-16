@@ -80,15 +80,17 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
     # Initialization
     g = 0  # Cost
     hash_table = []  # Memory
+    hash_levels = [] # Nivel en el que se encuentra cada elemento de memoria (hash_table)
+    hash_level_index = [] # Posición del nivel que toca explorar
     BEAM = [initial_state]
     leafBacktracking = False
     SET = []
     nBacks = 0
     level = 0
-    hash_levels = []
 
     hash_table.append(initial_state)
     hash_levels.append(level)
+    hash_level_index.append(0)
 
     # Main loop
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
@@ -136,8 +138,13 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                     print("SET: %s" % (SET))
                     leafBacktracking = True
                     nBacks = 0
-                    level = level - 2
-                    continue
+                    hash_level_index[level-1] = hash_level_index[level-1] + 1
+                    # Borramos los bloques anteriores
+                    count6 = 0
+                    #print(statesToRemove)
+                    while count6 < statesToRemove:
+                        hash_table.pop()
+                        count6 = count6 + 1
                 else:
                     print("------------------------------- BACKTRACKING HACIA ABUELO ----------------------------------")
                     nBacks = nBacks + 1
@@ -149,11 +156,8 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                         count2 = count2 + 1
                         index = index - 1
                     print("BEAM: %s" % (BEAM))
-                    #if nBacks == 1:
-                    level = level - 2
-                    #else:
-                    #    level = level - 2
-                    continue
+                level = level - 2
+                #continue
             else:
                 nBacks = 0
                 SET = deepcopy(SETtemp)
@@ -198,14 +202,32 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         BEAM = []  # the empty set
         g = g + 1
 
+        if hash_levels[len(hash_levels)-1] + 1 == level:
+            hash_level_index.append(0)
+
+        #if len(SETtemp) - 1 < hash_level_index[level]:
+        #    print("------------------------------- BACKTRACKING HACIA ABUELO ----------------------------------")
+        #    nBacks = nBacks + 1
+        #    BEAM = []
+        #    count2 = 1
+        #    index = B*nBacks
+        #    while count2 <= B:
+        #        BEAM.append(hash_table[len(hash_table)-1-index])
+        #        count2 = count2 + 1
+        #        index = index - 1
+        #    print("BEAM: %s" % (BEAM))
+        #    level = level - 2
+        #    continue
+
         # Fill the BEAM for the next loop
-        while len(SET) != 0 and B > len(BEAM):
+        while len(SET) != 0 and len(SET) - 1 >= hash_level_index[level] and B > len(BEAM):
             count4 = 0
             while count4 < B:
                 # print(SET)
-                if (count4 > len(SET) - 1):
+                print("level: %s hash_level_index[level]: %s" % (level, hash_level_index[level]))
+                if count4 > len(SET) - 1 or len(SET) - 1 < hash_level_index[level]:
                     break
-                state = SET.pop(0)
+                state = SET.pop(hash_level_index[level])
                 if leafBacktracking:
                     if state not in hash_table:
                         BEAM.append(state)
@@ -214,7 +236,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                 count4 = count4 + 1
 
         statesToRemove = 0
+
         print("BEAM: %s" % (BEAM))
+        print("level: %s" % (level))
 
         for state in BEAM:
             if state not in hash_table:
@@ -222,6 +246,8 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                 if len(hash_table) >= memory:
                     #print("hash_table: %s" % (hash_table))
                     #print("hash_levels: %s" % (hash_levels))
+                    #print("niveles: %s" % (len(hash_level_index)))
+                    print("level indexs: %s" % (hash_level_index[4300:4305]))
 
                     return float('inf')
 
@@ -236,9 +262,8 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                     # return "No se repite nada"
 
                 hash_table.append(state)
-                print("A memoria: %s" % (state))
+                #print("A memoria: %s" % (state))
                 hash_levels.append(level)
-                print("level: %s" % (level))
                 statesToRemove = statesToRemove + 1
 
         leafBacktracking = False
