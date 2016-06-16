@@ -74,7 +74,7 @@ global neighbours
 #
 # def nextSlice(depth, index, heuristic, B):
 #
-#     currentlayer =
+#     currentlayer = # g() obtener el nivel del estado: Sacar de la memoria el bloque que está en el nivel s # Linea 43: depth + 1
 
 def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
     # Initialization

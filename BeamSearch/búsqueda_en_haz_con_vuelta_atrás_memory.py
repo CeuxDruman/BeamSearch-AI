@@ -117,7 +117,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                         if successor not in SETtemp:
                             # print("pre-SET: %s" % (SET))
                             SETtemp.append(successor)
-                            # print("añadido")
+                            # print("aï¿½adido")
                             # print("post-SET: %s" % (SET))
                     #count1 = count1 + 1
 
@@ -128,7 +128,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
             if len(SETtemp) == 0 or fullMemory:
 
-                # Comprobamos que hay más hojas para recorrer en su nivel (hermanos)
+                # Comprobamos que hay mï¿½s hojas para recorrer en su nivel (hermanos)
                 hayMasElementos = False
                 for s in SET:
                     if s not in hash_table:
@@ -198,7 +198,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
             # while count < len(SET):
             for a in SET:  # Recorremos una vez el SET por cada elemento que contenga
 
-                # Filtramos primero para asegurarnos de que el estado recorrido no esté ya en la lista ordenada
+                # Filtramos primero para asegurarnos de que el estado recorrido no estï¿½ ya en la lista ordenada
                 cS = deepcopy(currentState)
                 for eachElement in SET:
                     if (cS not in SETOrdered):
@@ -207,12 +207,12 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                         cS = deepcopy(eachElement)
                 currentState = deepcopy(cS)
 
-                # Ahora cogemos el mejor de esta iteración, sin tener en cuenta los ya cogidos en iteraciones anteriores
+                # Ahora cogemos el mejor de esta iteraciï¿½n, sin tener en cuenta los ya cogidos en iteraciones anteriores
 
                 # currentState = SET[count]
                 for state in SET:
                     if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
-                        # print("Supuestamente %s no está en %s" % (state, SETOrdered))
+                        # print("Supuestamente %s no estï¿½ en %s" % (state, SETOrdered))
                         currentState = deepcopy(state)
                 print("currentState: %s (Heur: %s)" % (currentState, heuristic(currentState)))
                 SETOrdered.append(currentState)
@@ -258,7 +258,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                     #     if key not in lst2:
                     #         lst2.append(key)
                     #     else:
-                    #         return "Acabó: %s" % (key)
+                    #         return "Acabï¿½: %s" % (key)
                     # return "No se repite nada"
 
                 hash_table.append(state)
@@ -279,4 +279,4 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         #        index = index - 1
 
     
-    return "Hemos llegado al final del árbol. Coste: %s" % (g)
+    return "Hemos llegado al final del ï¿½rbol. Coste: %s" % (g)
