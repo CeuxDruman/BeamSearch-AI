@@ -7,7 +7,7 @@ from math import sqrt
 global heuristic
 global neighbours
 
-def BULB(initial_state, goal_state, heuristic, B, memory):
+def BULB(initial_state, goal_state, B, memory):
 
     # Initialization
     discrepancies = 0
@@ -16,14 +16,14 @@ def BULB(initial_state, goal_state, heuristic, B, memory):
     hash_level_index = [0]
 
     while True:
-        pathlength = BULBprobe(0, discrepancies, heuristic, B, hash_table, goal_state, memory)
+        pathlength = BULBprobe(0, discrepancies, B, hash_table, goal_state, memory)
         if pathlength < float('inf'):
             return pathlength
         discrepancies = discrepancies + 1
 
-def BULBprobe(depth, discrepancies, heuristic, B, hash_table, hash_levels, goal_state, memory):
+def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memory):
 
-    [SLICE, value, index] = nextSlice(depth, 0, heuristic, B, hash_table, hash_levels, goal_state, memory)
+    [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory)
 
     if value >= 0:
         return value
@@ -31,7 +31,7 @@ def BULBprobe(depth, discrepancies, heuristic, B, hash_table, hash_levels, goal_
     if discrepancies == 0:
         if SLICE is []:
             return float('inf')
-        pathlenght = BULBprobe(depth+1, 0, heuristic, B, hash_table, hash_levels, goal_state, memory)
+        pathlenght = BULBprobe(depth+1, 0, B, hash_table, hash_levels, goal_state, memory)
         for s in SLICE:
             hash_table.remove(s)
         return pathlenght
@@ -40,7 +40,7 @@ def BULBprobe(depth, discrepancies, heuristic, B, hash_table, hash_levels, goal_
             for s in SLICE:
                 hash_table.remove(s)
         while True:
-            [SLICE, value, index] = nextSlice(depth, index, heuristic, B, hash_table, hash_levels, goal_state, memory)
+            [SLICE, value, index] = nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory)
             if value >= 0:
                 if value < float('inf'):
                     return value
@@ -48,24 +48,22 @@ def BULBprobe(depth, discrepancies, heuristic, B, hash_table, hash_levels, goal_
                     break
             if SLICE is []:
                 continue
-            pathlenght = BULBprobe(depth+1, discrepancies-1, heuristic, B, hash_table, hash_levels, goal_state, memory)
+            pathlenght = BULBprobe(depth+1, discrepancies-1, B, hash_table, hash_levels, goal_state, memory)
             for s in SLICE:
                 hash_table.remove(s)
             if pathlenght < float('inf'):
                 return pathlenght
-        [SLICE, value, index] = nextSlice(depth, 0, heuristic, B, hash_table, hash_levels, goal_state, memory)
+        [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory)
         if value >= 0:
             return value
         if SLICE is []:
             return float('inf')
-        pathlenght = BULBprobe(depth+1, discrepancies, heuristic, B, hash_table, hash_levels, goal_state, memory)
+        pathlenght = BULBprobe(depth+1, discrepancies, B, hash_table, hash_levels, goal_state, memory)
         for s in SLICE:
             hash_table.remove(s)
         return pathlenght
 
-def nextSlice(depth, index, heuristic, B, hash_table, hash_levels, goal_state, memory):
-
-    # g() obtener el nivel del estado: Sacar de la memoria el bloque que está en el nivel s
+def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory):
 
     ## currentlayer := {s in hash_table | g(s) = depth}
 
@@ -92,9 +90,13 @@ def nextSlice(depth, index, heuristic, B, hash_table, hash_levels, goal_state, m
             ## g(SUCCS[i]) := depth + 1
             SLICE.append(SUCCS[i])
             hash_table.append(SUCCS[i])
+            hash_levels.append(depth + 1)
             if len(hash_table) >= memory:
                 for s in SLICE:
-                    hash_table.remove(s)
+                    if s in hash_table:
+                        pos_in_hash_table = hash_table.index(s)
+                        hash_table.remove(s)
+                        hash_levels.pop(pos_in_hash_table)
                 return [[], float('inf'), -1]
         i = i + 1
     return [SLICE, -1, i]
