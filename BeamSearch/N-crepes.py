@@ -91,8 +91,8 @@ def N_Crepes(N):
     estado_final = deepcopy(estado_inicial)
     estado_final.sort()
 
-    print("estado_final: %s" % (estado_final))
     print("estado_inicial: %s" % (estado_inicial))
+    print("estado_final: %s" % (estado_final))
 
     BS.heuristic = heuristic
     BS.neighbours = neighbours
@@ -132,7 +132,10 @@ def N_Crepes(N):
 # print("Result: %s" % (N_Crepes(40))) # 3.5269316613043475 segundos
 # print("Result: %s" % (N_Crepes(50))) # 9.05103974826087 segundos
 # print("Result: %s" % (N_Crepes(60))) # 81.19811169434782 segundos
-#print("Result: %s" % (N_Crepes(100))) # segundos
+# print("Result: %s" % (N_Crepes(70))) # 461.44489415913046 segundos
+# print("Result: %s" % (N_Crepes(80))) # segundos
+# print("Result: %s" % (N_Crepes(90))) # segundos
+# print("Result: %s" % (N_Crepes(100))) # segundos
 
 #print(neighbours([3,2,5,1,6,4]))
 #print(heuristic([1,2,3,4,5,6,7,8,9]))

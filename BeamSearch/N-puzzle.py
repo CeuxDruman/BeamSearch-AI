@@ -7,10 +7,13 @@ from random import shuffle
 from math import sqrt
 from copy import deepcopy
 import random
+import sys
 import búsqueda_en_haz as BS
 import búsqueda_en_haz_con_vuelta_atrás as BSBT
 import búsqueda_en_haz_con_discrepancias as BSD
 import búsqueda_en_haz_backtracking as BSBack # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
+
+sys.setrecursionlimit(10000)
 
 def neighbours(state):
 
@@ -186,12 +189,12 @@ def N_Puzzle(N):
     BSBack.heuristic = heuristic # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
     BSBack.neighbours = neighbours # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
 
-    return BSBack.busqueda_en_haz(1, estado_inicial, 2000, estado_final) # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
+    # return BSBack.busqueda_en_haz(1, estado_inicial, 2000, estado_final) # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
 
     BSD.heuristic = heuristic
     BSD.neighbours = neighbours
 
-    # return BSD.BULB(estado_inicial, estado_final, 1, 100)
+    return BSD.BULB([2,4,8,7,3,5,1,6,0], estado_final, 5, 150)
 
 
 
