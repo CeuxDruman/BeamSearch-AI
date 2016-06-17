@@ -30,6 +30,8 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
     #SET = []
     nBacks = 0
     level = 0
+    #backtrackingStop = False
+    backtrackingCount = 10
 
     hash_table.append(initial_state)
     hash_levels.append(level)
@@ -42,6 +44,11 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         if hash_levels[len(hash_levels)-1] + 1 == level:
             hash_level_index.append(0)
         SET = []  # the empty set
+
+        #if backtrackingStop:
+        #    if backtrackingCount == 0:
+        #        return "Ha hecho backtracking"
+        #    backtrackingCount = backtrackingCount - 1
 
         # print("BEAM: %s" % (BEAM))
 
@@ -100,38 +107,42 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
             SET = SETOrdered
 
         # Filter the nodes that have been already visited on this level
+        SETToFilter = deepcopy(SET)
         print("hash_level_index[level]: %s" % (hash_level_index[level]))
         count3 = 0
         print("SET pre-filter: %s" % (SET))
-        for node in SET:
+        for node in SETToFilter:
             if count3 < hash_level_index[level]:
                 print("Already visited: %s" % (SET.pop(0)))
             count3 = count3 + 1
 
         if len(SET) == 0: # SI LLEGAMOS A UNA HOJA DEL �RBOL (No hay sucesores)
-
+            #backtrackingStop = True
             print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
             print("nivel: %s" % (level))
             print("hash_table size: %s" % (len(hash_table)))
             print("hash_levels size: %s" % (len(hash_levels)))
+
             # Borramos los bloques anteriores
             nivel = level-1
             for nvl in hash_levels:
                 if nvl == nivel:
-                    hash_table.pop(hash_levels.index(nvl))
-                    hash_levels.remove(nvl)
+                    hash_table.pop(hash_levels.index(nvl)) # Borramos de memoria todos los bloques anteriores
+            hash_levels = list(filter((nvl).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
 
             level = level - 2 # Volvemos al nivel del Padre (BEAM)
 
             # Volvemos al BEAM anterior
             BEAM = []
+            count4 = 0
             for lvl in hash_levels:
                 if lvl == level:
-                    BEAM.append(hash_table[hash_levels.index(lvl)])
+                    BEAM.append(hash_table[count4])
+                count4 = count4 + 1
 
             print("BEAM tras Backtracking: %s" % (BEAM))
 
-            hash_level_index[level+1] = hash_level_index[level+1] + 1
+            hash_level_index[level+1] = hash_level_index[level+1] + B
 
             hash_level_index[level + 2] = 0
 
@@ -163,37 +174,41 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
         for state in BEAM:
             if state not in hash_table:
-                print("HT: %s MM: %s" % (len(hash_table), memory))
+                #print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
 
-                    #print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking (memory) \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
-                    #print("nivel: %s" % (level))
-                    #print("hash_table size: %s" % (len(hash_table)))
-                    #print("hash_levels size: %s" % (len(hash_levels)))
-                    ## Borramos los bloques anteriores
-                    #nivel = level-1
-                    #for nvl in hash_levels:
-                    #    if nvl == nivel:
-                    #        hash_table.pop(hash_levels.index(nvl))
-                    #        hash_levels.remove(nvl)
+                    #backtrackingStop = True
+                    print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking (memory) \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
+                    print("nivel: %s" % (level))
+                    print("hash_table size: %s" % (len(hash_table)))
+                    print("hash_levels size: %s" % (len(hash_levels)))
 
-                    #level = level - 2 # Volvemos al nivel del Padre (BEAM)
+                    # Borramos los bloques anteriores
+                    nivel = level-1
+                    for nvl in hash_levels:
+                        if nvl == nivel:
+                            hash_table.pop(hash_levels.index(nvl)) # Borramos de memoria todos los bloques anteriores
+                    hash_levels = list(filter((nvl).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
 
-                    ## Volvemos al BEAM anterior
-                    #BEAM = []
-                    #for lvl in hash_levels:
-                    #    if lvl == level:
-                    #        BEAM.append(hash_table[hash_levels.index(lvl)])
+                    level = level - 2 # Volvemos al nivel del Padre (BEAM)
 
-                    #print("BEAM tras Backtracking: %s" % (BEAM))
+                    # Volvemos al BEAM anterior
+                    BEAM = []
+                    count4 = 0
+                    for lvl in hash_levels:
+                        if lvl == level:
+                            BEAM.append(hash_table[count4])
+                        count4 = count4 + 1
 
-                    #hash_level_index[level+1] = hash_level_index[level+1] + 1
+                    print("BEAM tras Backtracking: %s" % (BEAM))
 
-                    #hash_level_index[level + 2] = 0
+                    hash_level_index[level+1] = hash_level_index[level+1] + B
 
-                    #continue
+                    hash_level_index[level + 2] = 0
 
-                    return float('inf')
+                    continue
+
+                    #return float('inf')
 
                     # para averiguar si hemos implementado bien el que no se tomen en cuenta nodos ya explorados
                     # lst = hash_table
@@ -208,6 +223,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                 hash_table.append(state)
                 #print("A memoria: %s" % (state))
                 hash_levels.append(level)
+                print("HT: %s MM: %s" % (len(hash_table), memory))
 
 
     return "Hemos llegado al final del arbol. Coste: %s" % (g)
