@@ -57,11 +57,10 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
 
         ### Order the SET nodes ascending by their Heur.
 
-        # OPTION 1
         SETOrdered = []
 
-        count = 0
-        currentState = SET[count]
+        #count = 0
+        currentState = SET[0]
 
         # while count < len(SET):
         for a in SET:  # Recorremos una vez el SET por cada elemento que contenga
@@ -125,7 +124,7 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                     # return "No se repite nada"
 
                 hash_table.append(state)
-                print("A memoria: %s" % (state))
+                #print("A memoria: %s" % (state))
 
     return "Hemos llegado al final del árbol. Coste: %s" % (g)
 

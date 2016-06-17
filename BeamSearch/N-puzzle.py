@@ -10,6 +10,7 @@ import random
 import búsqueda_en_haz as BS
 import búsqueda_en_haz_con_vuelta_atrás as BSBT
 import búsqueda_en_haz_con_discrepancias as BSD
+import búsqueda_en_haz_backtracking as BSBack # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
 
 def neighbours(state):
 
@@ -180,13 +181,17 @@ def N_Puzzle(N):
     BSBT.neighbours = neighbours
 
     #return BSBT.busqueda_en_haz_backtracking(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final)
-    #return BSBT.busqueda_en_haz_backtracking(2, estado_inicial, 20000, estado_final)
     #return BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 500, estado_final)
+
+    BSBack.heuristic = heuristic # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
+    BSBack.neighbours = neighbours # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
+
+    return BSBack.busqueda_en_haz(1, estado_inicial, 2000, estado_final) # ASDASDASDASDASDASDASD ELIMINAR !!!!!!!
 
     BSD.heuristic = heuristic
     BSD.neighbours = neighbours
 
-    return BSD.BULB(estado_inicial, estado_final, 5, 1000)
+    # return BSD.BULB(estado_inicial, estado_final, 1, 100)
 
 
 
