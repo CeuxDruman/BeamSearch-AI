@@ -24,7 +24,7 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
     g = 0  # Cost
     hash_table = []  # Memory
     hash_levels = [] # Nivel en el que se encuentra cada elemento de memoria (hash_table)
-    hash_level_index = [] # Posición del nivel que toca explorar
+    hash_level_index = [] # Posiciï¿½n del nivel que toca explorar
     BEAM = [initial_state]
     #leafBacktracking = False
     #SET = []
@@ -58,31 +58,11 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                     if successor not in SET:
                         # print("pre-SET: %s" % (SET))
                         SET.append(successor)
-                        # print("añadido")
+                        # print("aï¿½adido")
                         # print("post-SET: %s" % (SET))
                 contadoor = contadoor + 1
 
         # print("SET sin ordenar: %s" % (SET))
-
-        if len(SET) == 0: # SI LLEGAMOS A UNA HOJA DEL ÁRBOL (No hay sucesores)
-
-            print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
-
-            # Borramos los bloques anteriores
-            count6 = 0
-            #print(statesToRemove)
-            while count6 < statesToRemove:
-                hash_table.pop()
-                count6 = count6 + 1
-            level = level - 2 # Volvemos al nivel del Padre (BEAM)
-
-            # Volvemos al BEAM anterior
-            BEAM = []
-            for lvl in hash_levels:
-                if lvl == level:
-                    BEAM.append(hash_table[hash_levels.index(lvl)])
-
-            continue
 
         #    # Volvemos a generar un SET nuevo con el BEAM anterior
         #    for state in BEAM:
@@ -97,16 +77,16 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
         #                if successor not in SET:
         #                    # print("pre-SET: %s" % (SET))
         #                    SET.append(successor)
-        #                    # print("añadido")
+        #                    # print("aï¿½adido")
         #                    # print("post-SET: %s" % (SET))
         #            contadoor = contadoor + 1
 
-        #    if len(SET) == 0: # Ya no hay más nodos sin explorar en este nivel --> Hacemos Backtracking hacia el (conjunto) Abuelo
+        #    if len(SET) == 0: # Ya no hay mï¿½s nodos sin explorar en este nivel --> Hacemos Backtracking hacia el (conjunto) Abuelo
 
         #    else: # Siguen quedando nodos por explorar en este nivel --> Hacemos Backtracking hacia el siguiente (conjunto) hermano
 
 
-        #    # Comprobamos que hay más hojas para recorrer en su nivel (hermanos) no exploradas.
+        #    # Comprobamos que hay mï¿½s hojas para recorrer en su nivel (hermanos) no exploradas.
         #    hayMasElementos = False
         #    index = 0
         #    print("TEST/SET: %s" % (SET))
@@ -147,39 +127,83 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
         #else:
         #    nBacks = 0
 
-        ### Order the SET nodes ascending by their Heur.
+        if len(SET) != 0:
+            ### Order the SET nodes ascending by their Heur.
 
-        SETOrdered = []
+            SETOrdered = []
 
-        #count = 0
-        currentState = SET[0]
+            #count = 0
+            currentState = SET[0]
 
-        # while count < len(SET):
-        for a in SET:  # Recorremos una vez el SET por cada elemento que contenga
+            # while count < len(SET):
+            for a in SET:  # Recorremos una vez el SET por cada elemento que contenga
 
-            # Filtramos primero para asegurarnos de que el estado recorrido no esté ya en la lista ordenada
-            cS = deepcopy(currentState)
-            for eachElement in SET:
-                if (cS not in SETOrdered):
-                    break
-                else:
-                    cS = deepcopy(eachElement)
-            currentState = deepcopy(cS)
+                # Filtramos primero para asegurarnos de que el estado recorrido no estï¿½ ya en la lista ordenada
+                cS = deepcopy(currentState)
+                for eachElement in SET:
+                    if (cS not in SETOrdered):
+                        break
+                    else:
+                        cS = deepcopy(eachElement)
+                currentState = deepcopy(cS)
 
-            # Ahora cogemos el mejor de esta iteración, sin tener en cuenta los ya cogidos en iteraciones anteriores
+                # Ahora cogemos el mejor de esta iteraciï¿½n, sin tener en cuenta los ya cogidos en iteraciones anteriores
 
-            # currentState = SET[count]
-            for state in SET:
-                if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
-                    # print("Supuestamente %s no está en %s" % (state, SETOrdered))
-                    currentState = deepcopy(state)
-            print("sucessor: %s (Heur: %s)" % (currentState, heuristic(currentState)))
-            SETOrdered.append(currentState)
-            # count = count + 1
+                # currentState = SET[count]
+                for state in SET:
+                    if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
+                        # print("Supuestamente %s no estï¿½ en %s" % (state, SETOrdered))
+                        currentState = deepcopy(state)
+                print("sucessor: %s (Heur: %s)" % (currentState, heuristic(currentState)))
+                SETOrdered.append(currentState)
+                # count = count + 1
 
 
 
-        SET = SETOrdered
+            SET = SETOrdered
+
+        # Filter the nodes that have been already visited on this level
+        print("hash_level_index[level]: %s" % (hash_level_index[level]))
+        count3 = 0
+        print("SET pre-filter: %s" % (SET))
+        for node in SET:
+            if count3 < hash_level_index[level]:
+                print("Already visited: %s" % (SET.pop(0)))
+            count3 = count3 + 1
+
+        if len(SET) == 0: # SI LLEGAMOS A UNA HOJA DEL ï¿½RBOL (No hay sucesores)
+
+            print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
+            print("nivel: %s" % (level))
+            print("hash_table size: %s" % (len(hash_table)))
+            print("hash_levels size: %s" % (len(hash_levels)))
+            # Borramos los bloques anteriores
+            nivel = level-1
+            for nvl in hash_levels:
+                if nvl == nivel:
+                    hash_table.pop(hash_levels.index(nvl))
+                    hash_levels.remove(nvl)
+
+            #print(statesToRemove)
+            #count6 = 0
+            #while count6 < statesToRemove:
+            #    hash_table.pop()
+            #    count6 = count6 + 1
+            level = level - 2 # Volvemos al nivel del Padre (BEAM)
+
+            # Volvemos al BEAM anterior
+            BEAM = []
+            for lvl in hash_levels:
+                if lvl == level:
+                    BEAM.append(hash_table[hash_levels.index(lvl)])
+
+            print("BEAM tras Backtracking: %s" % (BEAM))
+
+            hash_level_index[level+1] = hash_level_index[level+1] + 1
+
+            hash_level_index[level + 2] = 0
+
+            continue
 
         # print("SET ordenado: %s" % (SET))
 
@@ -189,12 +213,7 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
         #if hash_levels[len(hash_levels)-1] + 1 == level:
         #    hash_level_index.append(0)
 
-        # Filter the nodes that have been already visited on this level
-        count3 = 0
-        for node in SET:
-            if count3 < hash_level_index[level]:
-                SET.pop(0)
-            count3 = count3 + 1
+        
 
         # Fill the BEAM for the next loop
         while len(SET) != 0 and B > len(BEAM):
@@ -225,13 +244,45 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                     #     if key not in lst2:
                     #         lst2.append(key)
                     #     else:
-                    #         return "Acabó: %s" % (key)
+                    #         return "Acabï¿½: %s" % (key)
                     # return "No se repite nada"
 
                 hash_table.append(state)
                 #print("A memoria: %s" % (state))
                 hash_levels.append(level)
                 tatesToRemove = statesToRemove + 1
+
+        #if len(BEAM) == 0: # SI AL HACER BACKTRACKING SIGUE SIN HABER POSIBILIDADES
+
+        #    print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
+        #    print("nivel: %s" % (level))
+        #    print("hash_table size: %s" % (len(hash_table)))
+        #    print("hash_levels size: %s" % (len(hash_levels)))
+        #    # Borramos los bloques de este nivel
+        #    nivel = level
+        #    for nvl in hash_levels:
+        #        if nvl == nivel:
+        #            hash_table.pop(hash_levels.index(nvl))
+        #            hash_levels.remove(nvl)
+
+        #    #print(statesToRemove)
+        #    #count6 = 0
+        #    #while count6 < statesToRemove:
+        #    #    hash_table.pop()
+        #    #    count6 = count6 + 1
+        #    level = level - 2 # Volvemos al nivel del Padre (BEAM)
+
+        #    # Volvemos al BEAM anterior
+        #    BEAM = []
+        #    for lvl in hash_levels:
+        #        if lvl == level:
+        #            BEAM.append(hash_table[hash_levels.index(lvl)])
+
+        #    print("BEAM tras Backtracking: %s" % (BEAM))
+
+        #    hash_level_index[level+1] = hash_level_index[level+1] + 1
+
+        #    continue
 
     return "Hemos llegado al final del arbol. Coste: %s" % (g)
 
@@ -240,4 +291,4 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
 #for i in range(10): print(random.randrange(100)) # Distintos
 
 #random.seed(365273) # Cambiar semilla para 15 instancias que para 30, 100, etc...
-                    # No cambiar semilla de un algoritmo a otro de búsqueda en haz
+                    # No cambiar semilla de un algoritmo a otro de bï¿½squeda en haz
