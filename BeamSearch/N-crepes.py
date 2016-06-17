@@ -7,6 +7,7 @@ from random import shuffle
 from math import sqrt
 from copy import deepcopy
 import random
+import timeit
 import búsqueda_en_haz as BS
 import búsqueda_en_haz_con_vuelta_atrás as BSBT
 import búsqueda_en_haz_con_discrepancias as BSD
@@ -99,6 +100,9 @@ def N_Crepes(N):
     BSBT.heuristic = heuristic
     BSBT.neighbours = neighbours
 
+    BSD.heuristic = heuristic
+    BSD.neighbours = neighbours
+
     #return BS.busqueda_en_haz(1, estado_inicial, num_Crepes, estado_final)
     #return BS.busqueda_en_haz(2, estado_inicial, num_Crepes, estado_final) #30 # Se queda sin memoria
     #return BS.busqueda_en_haz(2, estado_inicial, 100, estado_final) #30 # Se estanca en Heur 5/6
@@ -107,17 +111,28 @@ def N_Crepes(N):
     #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
     #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
 
-    #return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 35 de memoria con coste: 36
+    # return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 35 de memoria con coste: 36
 
-    return BSBT.busqueda_en_haz_backtracking(1, [2,4,3,1], 100, estado_final)
+    # return BSBT.busqueda_en_haz_backtracking(1, [2,4,3,1], 100, estado_final)
 
-print("Result: %s" % (N_Crepes(4)))
-#print("Result: %s" % (N_Crepes(9)))
-#print("Result: %s" % (N_Crepes(30)))
-#print("Result: %s" % (N_Crepes(40)))
-#print("Result: %s" % (N_Crepes(50)))
-#print("Result: %s" % (N_Crepes(60)))
-#print("Result: %s" % (N_Crepes(100)))
+    start = timeit.default_timer()
+
+    algorithm = BSD.BULB(estado_inicial, estado_final, 1, 100) # PERFECTO: Acaba usando 35 de memoria con coste: 36
+
+    stop = timeit.default_timer()
+
+    print(stop - start)
+
+    return algorithm
+
+
+# print("Result: %s" % (N_Crepes(4))) # 0.00032062739130434784 segundos
+# print("Result: %s" % (N_Crepes(9))) # 0.010819897826086956 segundos
+# print("Result: %s" % (N_Crepes(30))) # 0.9958482873913044 segundos
+# print("Result: %s" % (N_Crepes(40))) # 3.5269316613043475 segundos
+# print("Result: %s" % (N_Crepes(50))) # 9.05103974826087 segundos
+# print("Result: %s" % (N_Crepes(60))) # 81.19811169434782 segundos
+#print("Result: %s" % (N_Crepes(100))) # segundos
 
 #print(neighbours([3,2,5,1,6,4]))
 #print(heuristic([1,2,3,4,5,6,7,8,9]))
