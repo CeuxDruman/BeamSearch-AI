@@ -125,10 +125,17 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
             # Borramos los bloques anteriores
             nivel = level-1
-            for nvl in hash_levels:
-                if nvl == nivel:
-                    hash_table.pop(hash_levels.index(nvl)) # Borramos de memoria todos los bloques anteriores
-            hash_levels = list(filter((nvl).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
+            #for nvl in hash_levels:
+            #    if nvl == nivel:
+            #        hash_table.pop(hash_levels.index(nvl)) # Borramos de memoria todos los bloques anteriores
+            #hash_levels = list(filter((nvl).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
+
+            count5 = len(hash_levels) - 1
+            while count5 >= 0:
+                if hash_levels[count5] == nivel:
+                    hash_table.pop(count5)
+                count5 = count5 - 1
+            hash_levels = list(filter((nivel).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
 
             level = level - 2 # Volvemos al nivel del Padre (BEAM)
 
@@ -172,17 +179,25 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
                     # Borramos los bloques de este nivel
                     nivel = level
-                    for nvl in hash_levels:
-                        if nvl == nivel:
-                            hash_table.pop(hash_levels.index(nvl)) # Borramos de memoria todos los bloques anteriores
-                    hash_levels = list(filter((nvl).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
+                    #count5 = 0
+                    #for nvl in hash_levels:
+                    #    if nvl == nivel:
+                    #        hash_table.pop(count5) # Borramos de memoria todos los bloques anteriores
+                    #    count5 = count5 + 1
+                    count5 = len(hash_levels) - 1
+                    while count5 >= 0:
+                        if hash_levels[count5] == nivel:
+                            hash_table.pop(count5)
+                        count5 = count5 - 1
+
+                    hash_levels = list(filter((nivel).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
 
                     # Borramos los bloques anteriores
-                    nivel = level-1
-                    for nvl in hash_levels:
-                        if nvl == nivel:
-                            hash_table.pop(hash_levels.index(nvl)) # Borramos de memoria todos los bloques anteriores
-                    hash_levels = list(filter((nvl).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
+                    #nivel = level-1
+                    #for nvl in hash_levels:
+                    #    if nvl == nivel:
+                    #        hash_table.pop(hash_levels.index(nvl)) # Borramos de memoria todos los bloques anteriores
+                    #hash_levels = list(filter((nvl).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
 
                     level = level - 2 # Volvemos al nivel del Padre (BEAM)
 
@@ -227,7 +242,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         print("level: %s" % (level))
 
 
-    return "Hemos llegado al final del arbol. Coste: %s" % (g)
+    return "No se ha encontrado solución. Coste: %s" % (g)
 
 #import random
 
