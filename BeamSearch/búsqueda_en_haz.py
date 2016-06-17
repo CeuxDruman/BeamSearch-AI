@@ -16,19 +16,24 @@
 from math import sqrt
 from copy import deepcopy
 
+import timeit
+
 global heuristic
 global neighbours
 
 def busqueda_en_haz(B, initial_state, memory, goal_state):
+    start = timeit.default_timer()
     # Initialization
     g = 0  # Cost
     hash_table = []  # Memory
     hash_table.append(initial_state)
     BEAM = [initial_state]
+    num_estados_generados = 0
+    time = 0
 
     # Main loop
     while len(BEAM) != 0:  # loop until the BEAM contains no nodes
-        print("-----------------")
+        # print("-----------------")
         SET = []  # the empty set
 
         # print("BEAM: %s" % (BEAM))
@@ -38,11 +43,14 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
             # print("neighbours: %s" % (neighbours(state)))
             contadoor = 0
             for successor in neighbours(state):
+                num_estados_generados = num_estados_generados + 1
                 # print("Sucesor %s: %s" % (contadoor, successor))
                 if successor not in hash_table:
                     if successor == goal_state:
                         g = g + 1
-                        return g
+                        stop = timeit.default_timer()
+                        time = stop - start
+                        return [1, g, num_estados_generados, len(hash_table), time]
                     if successor not in SET:
                         # print("pre-SET: %s" % (SET))
                         SET.append(successor)
@@ -81,7 +89,7 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                 if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
                     # print("Supuestamente %s no está en %s" % (state, SETOrdered))
                     currentState = deepcopy(state)
-            print("sucessor: %s (Heur: %s)" % (currentState, heuristic(currentState)))
+            # print("sucessor: %s (Heur: %s)" % (currentState, heuristic(currentState)))
             SETOrdered.append(currentState)
             # count = count + 1
 
@@ -108,7 +116,7 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
         while len(SET) != 0 and B > len(BEAM):
             state = SET.pop(0)
             if state not in hash_table:
-                print("HT: %s MM: %s" % (len(hash_table), memory))
+                # print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
                     return float('inf')
 
@@ -126,9 +134,9 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                 #print("A memoria: %s" % (state))
 
                 BEAM.append(state)
-                print("BEAM: %s" % (BEAM))
+                # print("BEAM: %s" % (BEAM))
 
-    return "Hemos llegado al final del árbol. Coste: %s" % (g)
+    return [0, g, num_estados_generados, len(hash_table), time]
 
 #import random
 

@@ -2,11 +2,24 @@
 # Gastar la discrepancias lo antes posible
 
 from copy import deepcopy
+import timeit
 
 global heuristic
 global neighbours
 
+class Example():
+    num_estados_generados = 0
+
+instance = Example()
+
+class Example2():
+    hash_table2 = []
+
+instance2 = Example2()
+
 def BULB(initial_state, goal_state, B, memory):
+
+    start = timeit.default_timer()
 
     # Initialization
     discrepancies = 0
@@ -14,28 +27,35 @@ def BULB(initial_state, goal_state, B, memory):
     hash_table = [initial_state]
     hash_levels = [0]
     limitWhile = 1000000
+    num_estados_generados = 0
+    time = 0
+
 
     # print("Parada BULB 1")
     while limitWhile != 0:
-        print("^^^^^^^^^^")
-        print("Discrepancia: %s" % (discrepancies))
+        # print("^^^^^^^^^^")
+        # print("Discrepancia: %s" % (discrepancies))
         # print("Parada BULB 2")
-        pathlength = BULBprobe(0, discrepancies, B, hash_table, hash_levels, goal_state, memory)
+        pathlength = BULBprobe(0, discrepancies, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
+        print(instance.num_estados_generados)
+        print(len(instance2.hash_table2))
         # print("Parada BULB 3")
         if pathlength < float('inf'):
             # print("Parada BULB 4")
-            return pathlength
+            stop = timeit.default_timer()
+            time =  stop - start
+            return [1, pathlength, instance.num_estados_generados, len(instance2.hash_table2), time]
         discrepancies = discrepancies + 1
         limitWhile = limitWhile - 1
         # print("Parada BULB 5")
 
-def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memory):
+def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memory,num_estados_generados):
 
     # print("Hash Table: %s" % (hash_table))
     # print("Hash Levels: %s" % (hash_levels))
 
     # print("Parada probe 1")
-    [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory)
+    [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
 
     # print("SLICE: %s" % (SLICE))
     # print("value: %s" % (value))
@@ -51,7 +71,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
             # print("Parada probe 4")
             return float('inf')
         # print("Parada probe 5")
-        pathlenght = BULBprobe(depth+1, 0, B, hash_table, hash_levels, goal_state, memory)
+        pathlenght = BULBprobe(depth+1, 0, B, hash_table, hash_levels, goal_state, memory,num_estados_generados)
         for s in SLICE:
             # print("Parada probe 6")
             if s in hash_table:
@@ -59,6 +79,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
                 pos_in_hash_table = hash_table.index(s)
                 # print("hash_table-preborrado-probe6.1: %s" % (hash_table))
                 hash_table.remove(s)
+                # instance2.hash_table2.remove(s)
                 # print("hash_table-postborrado-probe6.1: %s" % (hash_table))
                 # print("hash_levels-preborrado-probe6.2: %s" % (hash_levels))
                 hash_levels.pop(pos_in_hash_table)
@@ -76,6 +97,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
                     pos_in_hash_table = hash_table.index(s)
                     # print("hash_table-preborrado-probe10.1: %s" % (hash_table))
                     hash_table.remove(s)
+                    # instance2.hash_table2.remove(s)
                     # print("hash_table-postborrado-probe10.1: %s" % (hash_table))
                     # print("hash_levels-preborrado-probe10.2: %s" % (hash_levels))
                     hash_levels.pop(pos_in_hash_table)
@@ -83,7 +105,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
                 # print("Parada probe 11")
         while True:
             # print("Parada probe 12")
-            [SLICE, value, index] = nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory)
+            [SLICE, value, index] = nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
             # print("Parada probe 13")
             if value >= 0:
                 # print("Parada probe 14")
@@ -97,7 +119,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
                 # print("Parada probe 17")
                 continue
             # print("Parada probe 18")
-            pathlenght = BULBprobe(depth+1, discrepancies-1, B, hash_table, hash_levels, goal_state, memory)
+            pathlenght = BULBprobe(depth+1, discrepancies-1, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
             for s in SLICE:
                 # print("Parada probe 19")
                 if s in hash_table:
@@ -105,6 +127,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
                     pos_in_hash_table = hash_table.index(s)
                     # print("hash_table-preborrado-probe19.1: %s" % (hash_table))
                     hash_table.remove(s)
+                    # instance2.hash_table2.remove(s)
                     # print("hash_table-postborrado-probe19.1: %s" % (hash_table))
                     # print("hash_levels-preborrado-probe19.2: %s" % (hash_levels))
                     hash_levels.pop(pos_in_hash_table)
@@ -114,7 +137,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
                 # print("Parada probe 21")
                 return pathlenght
         # print("Parada probe 22")
-        [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory)
+        [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
         # print("Parada probe 23")
         if value >= 0:
             # print("Parada probe 24")
@@ -123,7 +146,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
             # print("Parada probe 25")
             return float('inf')
         # print("Parada probe 26")
-        pathlenght = BULBprobe(depth+1, discrepancies, B, hash_table, hash_levels, goal_state, memory)
+        pathlenght = BULBprobe(depth+1, discrepancies, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
         for s in SLICE:
             # print("Parada probe 26")
             if s in hash_table:
@@ -131,6 +154,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
                 pos_in_hash_table = hash_table.index(s)
                 # print("hash_table-preborrado-probe26.1: %s" % (hash_table))
                 hash_table.remove(s)
+                # instance2.hash_table2.remove(s)
                 # print("hash_table-postborrado-probe26.1: %s" % (hash_table))
                 # print("hash_levels-preborrado-probe26.2: %s" % (hash_levels))
                 hash_levels.pop(pos_in_hash_table)
@@ -138,7 +162,7 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
             # print("Parada probe 27")
         return pathlenght
 
-def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory):
+def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory, num_estados_generados):
 
     ## currentlayer := {s in hash_table | g(s) = depth}
 
@@ -155,7 +179,7 @@ def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory):
         pos_in_list = pos_in_list + 1
 
 
-    SUCCS = generateNewSuccessor(currentlayer, hash_table)
+    SUCCS = generateNewSuccessor(currentlayer, hash_table, num_estados_generados)
     # print("Parada nextSlice 1")
     if SUCCS is [] or index == len(SUCCS):
         # print("Parada nextSlice 2")
@@ -174,6 +198,7 @@ def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory):
             ## g(SUCCS[i]) := depth + 1
             SLICE.append(SUCCS[i])
             hash_table.append(SUCCS[i])
+            instance2.hash_table2.append(SUCCS[i])
             hash_levels.append(depth + 1)
             if len(hash_table) >= memory:
                 # print("Parada nextSlice 7")
@@ -184,6 +209,7 @@ def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory):
                         pos_in_hash_table = hash_table.index(s)
                         # print("hash_table-preborrado: %s" % (hash_table))
                         hash_table.remove(s)
+                        instance2.hash_table2.remove(s)
                         # print("hash_table-postborrado: %s" % (hash_table))
                         # print("hash_levels-preborrado: %s" % (hash_levels))
                         hash_levels.pop(pos_in_hash_table)
@@ -197,7 +223,7 @@ def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory):
 # Funciona bien.
 # Comprobado con un BEAM de tamaño 1 y 2
 # Comprobado con hash_table vacío y con varios estados incluidos
-def generateNewSuccessor(stateset, hash_table):
+def generateNewSuccessor(stateset, hash_table, num_estados_generados):
 
     UnsortedSUCCS = []
 
@@ -235,5 +261,7 @@ def generateNewSuccessor(stateset, hash_table):
 
     # print("SUCCS: %s" % (SUCCS))
     # print("==========")
+
+    instance.num_estados_generados = instance.num_estados_generados + len(SUCCS)
 
     return SUCCS

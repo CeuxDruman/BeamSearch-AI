@@ -8,6 +8,7 @@ from math import sqrt
 from copy import deepcopy
 import random
 import timeit
+import os
 import búsqueda_en_haz as BS
 import búsqueda_en_haz_con_vuelta_atrás as BSBT
 import búsqueda_en_haz_con_discrepancias as BSD
@@ -72,58 +73,117 @@ def heuristic(state):
 
 def N_Crepes(N):
 
+    os.system("taskset -p 0xff %d" % os.getpid())
+
     num_Crepes = N
     #estado_final = [a for a in range(1,num_Crepes+1)]
     #estado_inicial = [a for a in range(1,num_Crepes+1)]
     #shuffle(estado_inicial)
 
     estado_final = []
-    estado_inicial = []
 
-    random.seed(6452357)
-    
-    for a in range(1,num_Crepes+1):
-        rand_num = random.randrange(1,num_Crepes+1)
-        while rand_num in estado_inicial:
-            rand_num = random.randrange(1,num_Crepes+1)
-        estado_inicial.append(rand_num)
+    instancias_resueltas = []
+    coste_medio_solucion = []
+    num_estados_generados = []
+    num_estados_almacenados = []
+    tiempo_medio_de_ejecucion = []
+    count = 0
+    max = 100
 
-    estado_final = deepcopy(estado_inicial)
-    estado_final.sort()
+    while count < max:
+        estado_inicial = []
 
-    print("estado_inicial: %s" % (estado_inicial))
-    print("estado_final: %s" % (estado_final))
+        random.seed(count)
 
-    BS.heuristic = heuristic
-    BS.neighbours = neighbours
+        for a in range(1, num_Crepes + 1):
+            rand_num = random.randrange(1, num_Crepes + 1)
+            while rand_num in estado_inicial:
+                rand_num = random.randrange(1, num_Crepes + 1)
+            estado_inicial.append(rand_num)
 
-    BSBT.heuristic = heuristic
-    BSBT.neighbours = neighbours
+        estado_final = deepcopy(estado_inicial)
+        estado_final.sort()
 
-    BSD.heuristic = heuristic
-    BSD.neighbours = neighbours
+        BS.heuristic = heuristic
+        BS.neighbours = neighbours
 
-    #return BS.busqueda_en_haz(1, estado_inicial, num_Crepes, estado_final)
-    #return BS.busqueda_en_haz(2, estado_inicial, num_Crepes, estado_final) #30 # Se queda sin memoria
-    #return BS.busqueda_en_haz(2, estado_inicial, 100, estado_final) #30 # Se estanca en Heur 5/6
-    #return BS.busqueda_en_haz(3, estado_inicial, 100, estado_final) #30 # FUNCIONA: Result: 35 justo antes de quedarse sin memoria (99 de 100)
+        BSD.heuristic = heuristic
+        BSD.neighbours = neighbours
 
-    #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
-    #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
+        # algorithm = BS.busqueda_en_haz(5, estado_inicial, 5000, estado_final)
+        # algorithm = BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 5000, estado_final)
+        algorithm = BSD.BULB(estado_inicial, estado_final, 10, 5000)
 
-    # return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 35 de memoria con coste: 36
+        instancias_resueltas.append(algorithm[0])
+        coste_medio_solucion.append(algorithm[1])
+        num_estados_generados.append(algorithm[2])
+        num_estados_almacenados.append(algorithm[3])
+        tiempo_medio_de_ejecucion.append(algorithm[4])
+        count = count + 1
+        print("Iteración %s" %(count))
 
-    # return BSBT.busqueda_en_haz_backtracking(1, [2,4,3,1], 100, estado_final)
+    resuelto = sum(instancias_resueltas)/len(instancias_resueltas)
+    coste_medio = sum(coste_medio_solucion)/len(coste_medio_solucion)
+    estados_generados = sum(num_estados_generados)/len(num_estados_generados)
+    estados_almacenados = sum(num_estados_almacenados)/len(num_estados_almacenados)
+    tiempo = sum(tiempo_medio_de_ejecucion)/len(tiempo_medio_de_ejecucion)
 
-    start = timeit.default_timer()
+    print("Instancias resueltas: %s" %(resuelto))
+    print("Coste medio solución: %s" %(coste_medio))
+    print("Numero medio de estados generados: %s" %(estados_generados))
+    print("Numero medio de estados almacenados: %s" %(estados_almacenados))
+    print("Tiempo medio de ejecución: %s" %(tiempo))
 
-    algorithm = BSD.BULB(estado_inicial, estado_final, 1, 5000) # PERFECTO: Acaba usando 35 de memoria con coste: 36
+N_Crepes(30)
 
-    stop = timeit.default_timer()
-
-    print(stop - start)
-
-    return algorithm
+    # random.seed(0)
+    #
+    # for a in range(1,num_Crepes+1):
+    #     rand_num = random.randrange(1,num_Crepes+1)
+    #     while rand_num in estado_inicial:
+    #         rand_num = random.randrange(1,num_Crepes+1)
+    #     estado_inicial.append(rand_num)
+    #
+    # estado_final = deepcopy(estado_inicial)
+    # estado_final.sort()
+    #
+    # print("estado_inicial: %s" % (estado_inicial))
+    # print("estado_final: %s" % (estado_final))
+    #
+    # BS.heuristic = heuristic
+    # BS.neighbours = neighbours
+    #
+    # BSBT.heuristic = heuristic
+    # BSBT.neighbours = neighbours
+    #
+    # BSD.heuristic = heuristic
+    # BSD.neighbours = neighbours
+    #
+    # #return BS.busqueda_en_haz(1, estado_inicial, num_Crepes, estado_final)
+    # #return BS.busqueda_en_haz(2, estado_inicial, num_Crepes, estado_final) #30 # Se queda sin memoria
+    # #return BS.busqueda_en_haz(2, estado_inicial, 100, estado_final) #30 # Se estanca en Heur 5/6
+    # #return BS.busqueda_en_haz(3, estado_inicial, 100, estado_final) #30 # FUNCIONA: Result: 35 justo antes de quedarse sin memoria (99 de 100)
+    #
+    # #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
+    # #return BS.busqueda_en_haz(1, [1,2,3,4,5,6,7,8,9], num_Crepes, estado_final)
+    #
+    # # return BS.busqueda_en_haz(1, estado_inicial, 100, estado_final) # PERFECTO: Acaba usando 35 de memoria con coste: 36
+    #
+    # # return BSBT.busqueda_en_haz_backtracking(1, [2,4,3,1], 100, estado_final)
+    #
+    # start = timeit.default_timer()
+    #
+    # algorithm = BS.busqueda_en_haz(1, estado_inicial, 5000, estado_final)
+    # # algorithm = BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 5000, estado_final)
+    # # algorithm = BSD.BULB(estado_inicial, estado_final, 1, 5000)
+    #
+    # stop = timeit.default_timer()
+    #
+    # time = stop - start
+    #
+    # print("Tiempo de ejecución: %s" %(time))
+    #
+    # return algorithm
 
 
 # print("Result: %s" % (N_Crepes(4))) # 0.00032062739130434784 segundos
