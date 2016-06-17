@@ -145,9 +145,9 @@ def N_Puzzle(N):
     estado_inicial = []#[a for a in range(num_Casillas)]
     #shuffle(estado_inicial)
 
-    #random.seed(3452168)
-    random.seed(123456)
-    
+    random.seed(3452168)
+    #random.seed(123456)
+
     for a in range(num_Casillas):
         rand_num = random.randrange(num_Casillas)
         while rand_num in estado_inicial:
@@ -185,21 +185,21 @@ def N_Puzzle(N):
     #return BSBT.busqueda_en_haz_backtracking(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final)
     #return BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 500, estado_final)
 
-    return BSBT.busqueda_en_haz_backtracking(1, [2,4,8,7,3,5,1,6,0], 2000, estado_final)
+    #return BSBT.busqueda_en_haz_backtracking(5, [2,4,8,7,3,5,1,6,0], 250, estado_final)
 
     BSD.heuristic = heuristic
     BSD.neighbours = neighbours
 
     #return BSD.BULB([2,4,8,7,3,5,1,6,0], estado_final, 5, 150)
+    return BSD.BULB(estado_inicial, estado_final, 5, 100000)
 
 
 
-#print(N_Puzzle(3))
+# print(N_Puzzle(3))
 print(N_Puzzle(8))
-#print(N_Puzzle(15))
-#print(N_Puzzle(24))
-#print(N_Puzzle(99))
-#N_Puzzle(8)
+# print(N_Puzzle(15))
+# print(N_Puzzle(24))
+# print(N_Puzzle(99))
 
 #print(neighbours([0,1,2,3,4,5,6,7,8]))
 #print(heuristic([2,1,0,3,4,8,6,7,5]))

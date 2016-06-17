@@ -117,7 +117,7 @@ def N_Crepes(N):
 
     start = timeit.default_timer()
 
-    algorithm = BSD.BULB(estado_inicial, estado_final, 1, 100) # PERFECTO: Acaba usando 35 de memoria con coste: 36
+    algorithm = BSD.BULB(estado_inicial, estado_final, 1, 5000) # PERFECTO: Acaba usando 35 de memoria con coste: 36
 
     stop = timeit.default_timer()
 
@@ -132,9 +132,6 @@ def N_Crepes(N):
 # print("Result: %s" % (N_Crepes(40))) # 3.5269316613043475 segundos
 # print("Result: %s" % (N_Crepes(50))) # 9.05103974826087 segundos
 # print("Result: %s" % (N_Crepes(60))) # 81.19811169434782 segundos
-# print("Result: %s" % (N_Crepes(70))) # 461.44489415913046 segundos
-# print("Result: %s" % (N_Crepes(80))) # segundos
-# print("Result: %s" % (N_Crepes(90))) # segundos
 # print("Result: %s" % (N_Crepes(100))) # segundos
 
 #print(neighbours([3,2,5,1,6,4]))
