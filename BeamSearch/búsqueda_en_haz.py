@@ -95,19 +95,18 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
         g = g + 1
 
         # Fill the BEAM for the next loop
+        #while len(SET) != 0 and B > len(BEAM):
+        #    count = 0
+        #    while count < B:
+        #        # print(SET)
+        #        if (count > len(SET) - 1):
+        #            break
+        #        state = SET.pop(0)
+        #        BEAM.append(state)
+        #        count = count + 1
+
         while len(SET) != 0 and B > len(BEAM):
-            count = 0
-            while count < B:
-                # print(SET)
-                if (count > len(SET) - 1):
-                    break
-                state = SET.pop(0)
-                BEAM.append(state)
-                count = count + 1
-
-        print("BEAM: %s" % (BEAM))
-
-        for state in BEAM:
+            state = SET.pop(0)
             if state not in hash_table:
                 print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
@@ -125,6 +124,9 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
 
                 hash_table.append(state)
                 #print("A memoria: %s" % (state))
+
+                BEAM.append(state)
+                print("BEAM: %s" % (BEAM))
 
     return "Hemos llegado al final del árbol. Coste: %s" % (g)
 

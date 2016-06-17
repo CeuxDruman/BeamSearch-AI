@@ -159,15 +159,19 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         
 
         # Fill the BEAM for the next loop
+        #while len(SET) != 0 and B > len(BEAM):
+        #    count = 0
+        #    while count < B:
+        #        # print(SET)
+        #        if (count > len(SET) - 1):
+        #            break
+        #        state = SET.pop(0)
+        #        BEAM.append(state)
+        #        count = count + 1
+
         while len(SET) != 0 and B > len(BEAM):
-            count = 0
-            while count < B:
-                # print(SET)
-                if (count > len(SET) - 1):
-                    break
-                state = SET.pop(0)
-                BEAM.append(state)
-                count = count + 1
+            state = SET.pop(0)
+            BEAM.append(state)
 
         print("BEAM: %s" % (BEAM))
         print("level: %s" % (level))
@@ -182,6 +186,13 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                     print("nivel: %s" % (level))
                     print("hash_table size: %s" % (len(hash_table)))
                     print("hash_levels size: %s" % (len(hash_levels)))
+
+                    # Borramos los bloques de este nivel
+                    nivel = level
+                    for nvl in hash_levels:
+                        if nvl == nivel:
+                            hash_table.pop(hash_levels.index(nvl)) # Borramos de memoria todos los bloques anteriores
+                    hash_levels = list(filter((nvl).__ne__, hash_levels)) # Borramos todos los elementos de este nivel
 
                     # Borramos los bloques anteriores
                     nivel = level-1
@@ -205,6 +216,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                     hash_level_index[level+1] = hash_level_index[level+1] + B
 
                     hash_level_index[level + 2] = 0
+
+                    print("post-hash_table size: %s" % (len(hash_table)))
+                    print("post-hash_levels size: %s" % (len(hash_levels)))
 
                     continue
 
