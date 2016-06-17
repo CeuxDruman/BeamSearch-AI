@@ -159,28 +159,11 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         
 
         # Fill the BEAM for the next loop
-        #while len(SET) != 0 and B > len(BEAM):
-        #    count = 0
-        #    while count < B:
-        #        # print(SET)
-        #        if (count > len(SET) - 1):
-        #            break
-        #        state = SET.pop(0)
-        #        BEAM.append(state)
-        #        count = count + 1
-
         while len(SET) != 0 and B > len(BEAM):
             state = SET.pop(0)
-            BEAM.append(state)
-
-        print("BEAM: %s" % (BEAM))
-        print("level: %s" % (level))
-
-        for state in BEAM:
             if state not in hash_table:
                 #print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
-
                     #backtrackingStop = True
                     print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking (memory) \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
                     print("nivel: %s" % (level))
@@ -231,13 +214,17 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                     #     if key not in lst2:
                     #         lst2.append(key)
                     #     else:
-                    #         return "Acab�: %s" % (key)
+                    #         return "Acabó: %s" % (key)
                     # return "No se repite nada"
 
                 hash_table.append(state)
                 #print("A memoria: %s" % (state))
+
+                BEAM.append(state)
                 hash_levels.append(level)
                 print("HT: %s MM: %s" % (len(hash_table), memory))
+        print("BEAM: %s" % (BEAM))
+        print("level: %s" % (level))
 
 
     return "Hemos llegado al final del arbol. Coste: %s" % (g)
