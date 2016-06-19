@@ -3,14 +3,13 @@
 # Important data:
 #   N       -> Number of pieces
 
-from random import shuffle
-from math import sqrt
 from copy import deepcopy
 import random
 import sys
 import búsqueda_en_haz as BS
 import búsqueda_en_haz_con_vuelta_atrás as BSBT
 import búsqueda_en_haz_con_discrepancias as BSD
+import os
 
 sys.setrecursionlimit(10000)
 
@@ -139,70 +138,124 @@ def heuristic(state):
 
 def N_Puzzle(N):
 
+    # ------------------------ START: DATOS A MODIFICAR ----------------------- #
+    algoritmo = "BEAM_SEARCH"    # Algorítmo de búsqueda a utilizar:
+                                    # BEAM_SEARCH --> Algoritmo búsqueda_en_haz.py
+                                    # BEAM_SEARCH_BACK --> Algoritmo búsqueda_en_haz_con_vuelta_atrás.py
+                                    # BEAM_SEARCH_DISC --> Algoritmo búsqueda_en_haz_con_discrepancias.py
+    max = 100                   # Número de instancias aleatorias
+    B = 5                       # Anchura del haz
+    memory = 5000               # Tamaño de memoria
+    # ------------------------ END: DATOS A MODIFICAR ----------------------- #
+
+    os.system("taskset -p 0xff %d" % os.getpid())
+
     num_Piezas = N
     num_Casillas = N + 1
-    estado_final = []#[a for a in range(num_Casillas)]
-    estado_inicial = []#[a for a in range(num_Casillas)]
-    #shuffle(estado_inicial)
 
-    random.seed(3452168)
-    #random.seed(123456)
+    estado_final = []
 
-    for a in range(num_Casillas):
-        rand_num = random.randrange(num_Casillas)
-        while rand_num in estado_inicial:
+    instancias_resueltas = []
+    coste_medio_solucion = []
+    num_estados_generados = []
+    num_estados_almacenados = []
+    tiempo_medio_de_ejecucion = []
+    count = 0
+
+    while count < max:
+        estado_inicial = []
+
+        random.seed(count)
+
+        for a in range(num_Casillas):
             rand_num = random.randrange(num_Casillas)
-        estado_inicial.append(rand_num)
+            while rand_num in estado_inicial:
+                rand_num = random.randrange(num_Casillas)
+            estado_inicial.append(rand_num)
 
-    estado_final = deepcopy(estado_inicial)
-    estado_final.sort()
+        estado_final = deepcopy(estado_inicial)
+        estado_final.sort()
 
-    print("estado_inicial: %s" % (estado_inicial))
-    print("estado_final: %s" % (estado_final))
+        BS.heuristic = heuristic
+        BS.neighbours = neighbours
 
-    BS.heuristic = heuristic
-    BS.neighbours = neighbours
+        BSD.heuristic = heuristic
+        BSD.neighbours = neighbours
 
-    #return BS.busqueda_en_haz(1, estado_inicial, num_Casillas, estado_final)
-    #return BS.busqueda_en_haz(1, estado_inicial, 1000, estado_final) # Error out of bound
-    #return BS.busqueda_en_haz(8, estado_inicial, 1000, estado_final) # Sigue sin encontrar nada, se queda in memoria
-    #return BS.busqueda_en_haz(4, estado_inicial, 2000, estado_final)
-    #return BS.busqueda_en_haz(4, [2,1,0,3,4,5,6,7,8], 2000, estado_final) # Sigue sin encontrar nada, se queda in memoria
-    #return BS.busqueda_en_haz(4, [1,2,0,3,4,5,6,7,8], 2000, estado_final) # Funciona sin problemas
-    #return BS.busqueda_en_haz(4, [1,2,5,3,4,0,6,7,8], 2000, estado_final) # Funciona sin problemas
+        BSBT.heuristic = heuristic
+        BSBT.neighbours = neighbours
 
-    #return BS.busqueda_en_haz(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
-    #return BS.busqueda_en_haz(1, [3,2,5,1,4,0,6,7,8], 2000, estado_final) # Ya no encuentra nada
+        if algoritmo == "BEAM_SEARCH":
+            algorithm = BS.busqueda_en_haz(B, [2,4,8,7,3,5,1,6,0], memory, estado_final)
+        elif algoritmo == "BEAM_SEARCH_BACK":
+            algorithm = BSBT.busqueda_en_haz_backtracking(B, estado_inicial, memory, estado_final)
+        elif algoritmo == "BEAM_SEARCH_DISC":
+            algorithm = BSD.BULB(estado_inicial, estado_final, B, memory)
+        else:
+            print("Debe introducir un algoritmo de búsqueda en haz válido (Ejs: BEAM_SEARCH, BEAM_SEARCH_BACK, BEAM_SEARCH_DISC)")
 
-    #return BS.busqueda_en_haz(3, [2,1,0,3,4,5,6,7,8], 30, estado_final)
-    #return BS.busqueda_en_haz(1, [2,1,0,3,4,5,6,7,8], 1, estado_final)
-    #return BS.busqueda_en_haz(1, estado_inicial, 2000, estado_final)
-    #return BS.busqueda_en_haz(2, estado_inicial, 2000, estado_final)
-    #return BS.busqueda_en_haz(5, [2,4,8,7,3,5,1,6,0], 1000, estado_final)
+        instancias_resueltas.append(algorithm[0])
+        coste_medio_solucion.append(algorithm[1])
+        num_estados_generados.append(algorithm[2])
+        num_estados_almacenados.append(algorithm[3])
+        tiempo_medio_de_ejecucion.append(algorithm[4])
+        count = count + 1
+        print("Iteración %s" %(count))
 
-    BSBT.heuristic = heuristic
-    BSBT.neighbours = neighbours
+    resuelto = str(sum(instancias_resueltas)/len(instancias_resueltas) * 100) + "%"
+    coste_medio = sum(coste_medio_solucion)/len(coste_medio_solucion)
+    estados_generados = sum(num_estados_generados)/len(num_estados_generados)
+    estados_almacenados = sum(num_estados_almacenados)/len(num_estados_almacenados)
+    tiempo = sum(tiempo_medio_de_ejecucion)/len(tiempo_medio_de_ejecucion)
+    
+    print("+----------+--------------------+-----------+-----------------+-------------------+-------------------------+")
+    print("|Beam width|Instancias resueltas|Coste medio|Estados generados|Estados almacenados|Tiempo medio de ejecución|")
+    print("+----------+--------------------+-----------+-----------------+-------------------+-------------------------+")
+    results = "|"
+    results = results + str(B)
+    guiones = 10 - len(str(B))
+    for i in range(guiones):
+        results = results + " "
+    results = results + "|"
 
-    #return BSBT.busqueda_en_haz_backtracking(4, [3,2,5,1,4,0,6,7,8], 2000, estado_final)
-    #return BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 500, estado_final)
+    results = results + str(resuelto)
+    guiones = 20 - len(str(resuelto))
+    for i in range(guiones):
+        results = results + " "
+    results = results + "|"
 
-    return BSBT.busqueda_en_haz_backtracking(5, estado_inicial, 1000, estado_final)
-    #return BSBT.busqueda_en_haz_backtracking(5, [2,4,8,7,3,5,1,6,0], 1000, estado_final)
-    #return BSBT.busqueda_en_haz_backtracking(1, estado_inicial, 200, estado_final)
+    results = results + str(coste_medio)
+    guiones = 11 - len(str(coste_medio))
+    for i in range(guiones):
+        results = results + " "
+    results = results + "|"
 
-    BSD.heuristic = heuristic
-    BSD.neighbours = neighbours
+    results = results + str(estados_generados)
+    guiones = 17 - len(str(estados_generados))
+    for i in range(guiones):
+        results = results + " "
+    results = results + "|"
 
-    #return BSD.BULB([2,4,8,7,3,5,1,6,0], estado_final, 5, 150)
-    #return BSD.BULB(estado_inicial, estado_final, 5, 100000)
+    results = results + str(estados_almacenados)
+    guiones = 19 - len(str(estados_almacenados))
+    for i in range(guiones):
+        results = results + " "
+    results = results + "|"
 
+    results = results + str(tiempo)
+    guiones = 25 - len(str(tiempo))
+    for i in range(guiones):
+        results = results + " "
+    results = results + "|"
+    print(results)
+    print("+----------+--------------------+-----------+-----------------+-------------------+-------------------------+")
 
+    
+# ------------------------ START: DATOS A MODIFICAR ----------------------- #
+tam = 8             # Tamaño del problema (Ejs: 8, 15, 24)
+# ------------------------ END: DATOS A MODIFICAR ----------------------- #
 
-# print(N_Puzzle(3))
-print(N_Puzzle(8))
-# print(N_Puzzle(15))
-# print(N_Puzzle(24))
-# print(N_Puzzle(99))
+N_Puzzle(tam)
 
 #print(neighbours([0,1,2,3,4,5,6,7,8]))
 #print(heuristic([2,1,0,3,4,8,6,7,5]))
