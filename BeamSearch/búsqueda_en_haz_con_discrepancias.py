@@ -5,46 +5,107 @@ from copy import deepcopy
 
 import timeit
 
+# Variables globlales que almacenan la heurística y los vecinos de un estado.
 global heuristic
 global neighbours
 
+# Variable estática que almacena los estados generados.
+# Permite almacenar los estados generados de todas las llamadas recursivas.
 class Estados_generados():
     num_estados_generados = 0
 
+# Accedemos a variable mediante una instancia.
+# Para entenderlo mejor mira la URL que te dejo dónde te explican cómo se usan las variables estáticas en Python.
+# URL: http://radek.io/2011/07/21/static-variables-and-methods-in-python/
 estados_generados_instance = Estados_generados()
 
+# Variable estática que almacena la memoria usada.
+# Permite almacenar todos los estados almacenados que se han ido añadiendo al hashtable en todas las llamadas recursivas.
 class Memory_table():
     memory_table = []
 
+# Accedemos a variable mediante una instancia.
+# Para entenderlo mejor mira la URL que te dejo dónde te explican cómo se usan las variables estáticas en Python.
+# URL: http://radek.io/2011/07/21/static-variables-and-methods-in-python/
 memory_table_instance = Memory_table()
 
+# Algoritmo padre.
+# Es al que se llama desde N-puzzle y N-crepes.
+# Recibe:
+    # initial_state: Estado inicial generado de forma aleatoria desde N-puzzle y N-crepes.
+    # goal_state: Estado final al que queremos llegar.
+    # B: Ancho del Haz que vamos a elegir.
+    # memory: Tamaño de la memoria disponible para este problema.
 def BULB(initial_state, goal_state, B, memory):
 
+    # Marcador de tiempo inicial.
     start = timeit.default_timer()
 
-    # Initialization
+    # Initialization:
+
+    # Número de discrepancias del problema.
     discrepancies = 0
+
+    # Variable que aparentamente no se usa.
+    # Quizás haya que quitarla xD
     state_level = 0;
+
+    # Tabla dónde almacemos los estados visitados.
     hash_table = [initial_state]
+
+    # Tabla de misma longitud que hash_table que nos dice en qué nivel del árbol está cada estado.
     hash_levels = [0]
+
+    # Nivel máximo de vueltas que puede dar el while de abajo.
+    # Sin esta variable, el número de vueltas podría ser casi-infinito.
     limitWhile = 1000000
+
+    # Inicializamos la varible declarada antes como variable estática.
     num_estados_generados = 0
+
+    # Nos indica el tiempo que tarda el algoritmo.
     time = 0
 
-
     # print("Parada BULB 1")
+
+    # Bucle dónde se ejecuta el algoritmo.
     while limitWhile != 0:
+
         # print("^^^^^^^^^^")
         # print("Discrepancia: %s" % (discrepancies))
+
+        # pathlength nos indica la distancia entre el estado inicial al estado final del problema.
+        # En otras palabras, es la solución del problema.
+        # Llamamos a BULBprobe, que será la propia lógica del algoritmo.
         pathlength = BULBprobe(0, discrepancies, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
+
         #print(estados_generados_instance.num_estados_generados)
         #print(len(memory_table_instance.memory_table))
+
+        # No indica si resultado es válido.
+        # Si no es infinito significa que tenemos solución.
         if pathlength < float('inf'):
+            # Generamos la variable de tiempo de fin del algoritmo.
             stop = timeit.default_timer()
+            # Calculamos el tiempo de ejecución del algoritmo.
             time =  stop - start
+            # Devolvemos el resultado
+            # Originalmente devolvía sólo el pathlength pero es necesario devolver más datos para la ejecución de las pruebas.
+            # Devolvemos:
+                # 1: Nos indica que hemos encontrado solución. Se puede entrender como boolean haySolucion.
+                # pathlength: Resultado propiamente dicho. Es la distancia entre el estado inicial y el final.
+                # estados_generados_instance.num_estados_generados: Guardamos el número de estados generados.
+                # len(memory_table_instance.memory_table): Guardamos los elementos que han entrado en hash_table.
+                    # Ahora me pegunto por qué lo guardo entero y no aumento el contador como hago en la variable anterior.
+                # time: Nos indica el tiempo que tarda en ejecutarse el algoritmo.
             return [1, pathlength, estados_generados_instance.num_estados_generados, len(memory_table_instance.memory_table), time]
+
+        # Si el resultado es infinito:
+        # Aumentamos el número de discrepancias permitidas.
         discrepancies = discrepancies + 1
+        # Disminuimos el número de iteraciones permitidas del while.
         limitWhile = limitWhile - 1
+        # Volvemos al while.
 
 def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memory,num_estados_generados):
 
