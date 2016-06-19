@@ -6,6 +6,7 @@
 from copy import deepcopy
 import random
 import sys
+from math import sqrt
 import búsqueda_en_haz as BS
 import búsqueda_en_haz_con_vuelta_atrás as BSBT
 import búsqueda_en_haz_con_discrepancias as BSD
