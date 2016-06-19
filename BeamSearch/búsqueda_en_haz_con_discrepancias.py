@@ -123,8 +123,8 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
 
     # A la izquierda:
         # SLICE: Conjunto de estados a tratar en esta iteración
-        # value: -
-        # index: -
+        # value: Solución del problema.
+        # index: Marca a partir de qué elemento vamos a continuar con el algoritmo.
     # A la derecha:
         # nextSlice(): Genera el conjunto de estados a tratar.
         # Recibe:
@@ -142,7 +142,8 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
     # print("value: %s" % (value))
     # print("index: %s" % (index))
 
-    # -
+    # Si value es mayor o igual que 0 devolvemos su valor.
+    # Luego se verá que en algunos casos se devuelve -1 por eso este if.
     if value >= 0:
         return value
 
@@ -188,7 +189,9 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
             # Calcumos de nuevo SLICE, value e index, pero esta vez, le pasamos el número de discrepancias que haya, no 0 como antes.
             [SLICE, value, index] = nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
 
-            # -
+
+            # Si value es mayor o igual que 0 y menor que infinito devolvemos su valor.
+            # Luego se verá que en algunos casos se devuelve -1 o infinito, por eso este if.
             if value >= 0:
                 if value < float('inf'):
                     return value
@@ -220,7 +223,8 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
         # Discrepancias vuelve a valer 0 porque hemos gastado todos los token de discrepancias permitidas.
         [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
 
-        # -
+        # Si value es mayor o igual que 0 devolvemos su valor.
+        # Luego se verá que en algunos casos se devuelve -1 por eso este if.
         if value >= 0:
             return value
 
@@ -243,51 +247,102 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
         # Devolvemos la longitud del árbol.
         return pathlenght
 
+# Aquí calculamos el siguinete grupo de elementos a tratar.
 def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory, num_estados_generados):
 
+    # Tabla dnde guardaremos los estados del hash_level de la profundidas dada.
     currentlayer = []
+
+    # Contador que actua como puntero a la posición de hash_table.
     pos_in_list = 0
 
     # g() obtener el nivel del estado: Sacar de la memoria el bloque que está en el nivel s
+    # Recorremos el hash_levels.
     for i in hash_levels:
+        # Cuando un nivel del hash_levels coreesponda con la profundidad...
         if i == depth:
+
             # print("pos_in_list: %s" % (pos_in_list))
             # print("hash_table: %s" % (hash_table))
             # print("hash_levels: %s" % (hash_levels))
+
+            # ... se lo añadimos al currentlayer.
             currentlayer.append(hash_table[pos_in_list])
+        # Incrementamos el puntero a la posición de hash_table.
         pos_in_list = pos_in_list + 1
 
 
+    # Generamos los sucesores que nos están en hash_table.
     SUCCS = generateNewSuccessor(currentlayer, hash_table, num_estados_generados)
+
+    # Si no hay sucesores o el index, que marca a partir de qué elemento vamos a continuar con el algoritmo, apunta fuera de la lista...
     if SUCCS is [] or index == len(SUCCS):
+        # ... Devolvemos:
+            # SLICE vacío
+            # value infinito
+            # index -1
         return [[], float('inf'), -1]
+
+    # Si el estado final está dentro de los sucesores,
     if goal_state in SUCCS:
+        # ... devolvemos
+            # SLICE vacío
+            # value la solución del problema.
+            # indez -1
         return [[], depth + 1, -1]
+
+    # Vaciamos el SLICE
     SLICE = []
+
+    # Guardamos en i el valor de index.
     i = index;
+
+    # Mientras que i no llegue al final de los sucesores y el SLICE no se mayor que el tamaño del haz.
     while(i < len(SUCCS) and len(SLICE) < B):
+
+        # Si el sucesor en la posición i no está en el hash_table...
         if(SUCCS[i] not in hash_table):
+
             ## g(SUCCS[i]) := depth + 1
+
+            # Añadimos al SLICE el estado
             SLICE.append(SUCCS[i])
+
+            # Añadimos al hash_table el estado.
             hash_table.append(SUCCS[i])
             memory_table_instance.memory_table.append(SUCCS[i])
+
+            # Añadimos al hash_levels la profundidad del estado.
             hash_levels.append(depth + 1)
+
+            # Si se excede la memoria...
             if len(hash_table) >= memory:
+                # ... borramos lo que haya todos lo elementos que hubiesemos añadido en esta iteración...
                 for s in SLICE:
                     if s in hash_table:
                         pos_in_hash_table = hash_table.index(s)
                         hash_table.remove(s)
                         memory_table_instance.memory_table.remove(s)
                         hash_levels.pop(pos_in_hash_table)
+
+                # ... y devolvemos un SLICE vacío, un value infinito y un index -1
                 return [[], float('inf'), -1]
+
+        # Incrementamos el contador y seguimos con el siguiente sucesor.
         i = i + 1
+
+    # Devolvemos el SLICE, value -1 e index con el valor que haya quedado i.
     return [SLICE, -1, i]
 
 # Funciona bien.
 # Comprobado con un BEAM de tamaño 1 y 2
 # Comprobado con hash_table vacío y con varios estados incluidos
+
+# Aquí se generan los sucesores que no estén en hash_table.
+# Básicamente es nuestro neighbours pero con la variante de que comprueba el hash_table
 def generateNewSuccessor(stateset, hash_table, num_estados_generados):
 
+    # Tabla para guardar los sucesores desordenados.
     UnsortedSUCCS = []
 
     # Generate the SET nodes
@@ -301,6 +356,7 @@ def generateNewSuccessor(stateset, hash_table, num_estados_generados):
 
     ## Sort states in SUCCS in order of increasing heuristic values
 
+    # Si no hay sucesores, es una perdida de tiempo ordenarlos y se devuelve la lista vacía.
     if not UnsortedSUCCS:
         return []
 
@@ -325,6 +381,7 @@ def generateNewSuccessor(stateset, hash_table, num_estados_generados):
     # print("SUCCS: %s" % (SUCCS))
     # print("==========")
 
+    # Aumentamos el contador de estados generados.
     estados_generados_instance.num_estados_generados = estados_generados_instance.num_estados_generados + len(SUCCS)
 
     return SUCCS
