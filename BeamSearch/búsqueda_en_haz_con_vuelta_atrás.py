@@ -19,9 +19,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
     start = timeit.default_timer()
     # Initialization
     g = 0  # Cost
-    hash_table = []  # Memory
-    hash_levels = [] # Nivel en el que se encuentra cada elemento de memoria (hash_table)
-    hash_level_index = [] # Posici�n del nivel que toca explorar
+    hash_table = []         # Memory
+    hash_levels = []        # Nivel en el que se encuentra cada elemento de memoria (hash_table) (Las posiciones de este array se corresponden con las de hash_table)
+    hash_level_index = []   # Posici�n del nivel que toca explorar (Las posiciones de este array se corresponden con las de cada nivel, siendo 0 el primer nivel)
     BEAM = [initial_state]
     nBacks = 0
     level = 0
@@ -30,6 +30,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
     num_estados_generados = 0
     time = 0
 
+    ####################################################################
+    # Metemos el estado inicial tanto en el BEAM como en el hash_table #
+    ####################################################################
     hash_table.append(initial_state)
     hash_levels.append(level)
     hash_level_index.append(0)
@@ -49,7 +52,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
         # print("BEAM: %s" % (BEAM))
 
-        # Generate the SET nodes
+        ############################################
+        # Generamos un nuevo SET a partir del BEAM #
+        ############################################
         for state in BEAM:
             # print("neighbours: %s" % (neighbours(state)))
             contadoor = 0
@@ -58,6 +63,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                 # print("Sucesor %s: %s" % (contadoor, successor))
                 if successor not in hash_table:
                     if successor == goal_state:
+                        #########################################################################################
+                        # Aquí llegamos en caso de que encontremos la solución entre los vecinos del BEAM (SET) #
+                        #########################################################################################
                         g = g + 1
                         stop = timeit.default_timer()
                         time = stop - start
@@ -72,7 +80,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         # print("SET sin ordenar: %s" % (SET))
 
         if len(SET) != 0:
-            ### Order the SET nodes ascending by their Heur.
+            ###################################
+            # Ordenamos el SET por heurística #
+            ###################################
 
             SETOrdered = []
 
@@ -100,7 +110,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
             SET = SETOrdered
 
-        # Filter the nodes that have been already visited on this level
+        ##########################################################################################
+        # Filtramos los nodos que ya han sido visitados en este nivel, para no volver a tomarlos #
+        ##########################################################################################
         SETToFilter = deepcopy(SET)
         #print("hash_level_index[level]: %s" % (hash_level_index[level]))
         count3 = 0
@@ -111,6 +123,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
                 SET.pop(0)
             count3 = count3 + 1
 
+        #################################################################
+        # En caso de llegar a una hoja del árbol (no hay más sucesores) #
+        #################################################################
         if len(SET) == 0: # SI LLEGAMOS A UNA HOJA DEL �RBOL (No hay sucesores)
             #backtrackingStop = True
             #print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
@@ -118,7 +133,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
             #print("hash_table size: %s" % (len(hash_table)))
             #print("hash_levels size: %s" % (len(hash_levels)))
             
-            # Borramos los bloques anteriores
+            ##################################################################
+            # Borramos los bloques generados en este nivel y del nivel padre #
+            ##################################################################
             nivel = level - 1
             count5 = len(hash_levels) - 1
             while count5 >= 0:
@@ -137,7 +154,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
             level = level - 2 # Volvemos al nivel del Padre (BEAM)
 
-            # Volvemos al BEAM anterior
+            #################################################
+            # Volvemos el BEAM anterior (al conjunto padre) #
+            #################################################
             BEAM = []
             count4 = 0
             for lvl in hash_levels:
@@ -161,19 +180,26 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         BEAM = []
         g = g + 1
 
-        # Fill the BEAM for the next loop
+        #####################################################################
+        # Generamos un nuevo BEAM a partir de los B mejores estados del SET #
+        #####################################################################
         while len(SET) != 0 and B > len(BEAM):
             state = SET.pop(0)
             if state not in hash_table:
                 #print("HT: %s MM: %s" % (len(hash_table), memory))
                 if len(hash_table) >= memory:
+                    ######################################################################################################
+                    # Aquí llegamos en caso de quedarnos sin memoria mientras guardamos cada estado del BEAM en la misma #
+                    ######################################################################################################
                     #backtrackingStop = True
                     #print("\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/ Backtracking (memory) \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/")
                     #print("nivel: %s" % (level))
                     #print("hash_table size: %s" % (len(hash_table)))
                     #print("hash_levels size: %s" % (len(hash_levels)))
 
-                    # Borramos los bloques de este nivel
+                    ##################################################################
+                    # Borramos los bloques generados en este nivel y del nivel padre #
+                    ##################################################################
                     nivel = level - 1
                     count5 = len(hash_levels) - 1
                     while count5 >= 0:
@@ -193,7 +219,9 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
 
                     level = level - 2 # Volvemos al nivel del Padre (BEAM)
 
-                    # Volvemos al BEAM anterior
+                    #################################################
+                    # Volvemos el BEAM anterior (al conjunto padre) #
+                    #################################################
                     BEAM = []
                     count4 = 0
                     for lvl in hash_levels:
@@ -233,5 +261,7 @@ def busqueda_en_haz_backtracking(B, initial_state, memory, goal_state):
         #print("BEAM: %s" % (BEAM))
         #print("level: %s" % (level))
 
-
+    ############################################################################################################
+    # Aquí llegamos en caso de que recorramos todo el árbol sin encontrar solución alguna (no debería ocurrir) #
+    ############################################################################################################
     return [0, g, num_estados_generados, len(hash_table), time]
