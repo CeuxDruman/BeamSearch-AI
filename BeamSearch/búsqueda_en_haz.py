@@ -13,7 +13,6 @@
 # - Note that a node that is already in the hash table is not added to the BEAM because a shorter path to that node has already been found.
 # - This process continues until the goal node is found, the hash table becomes full (indicating that the memory available has been exhausted), or the BEAM is empty after the main loop has completed (indicating a dead end in the search).
 
-from math import sqrt
 from copy import deepcopy
 
 import timeit
@@ -67,10 +66,8 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
 
         SETOrdered = []
 
-        #count = 0
         currentState = SET[0]
 
-        # while count < len(SET):
         for a in SET:  # Recorremos una vez el SET por cada elemento que contenga
 
             # Filtramos primero para asegurarnos de que el estado recorrido no esté ya en la lista ordenada
@@ -84,34 +81,20 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
 
             # Ahora cogemos el mejor de esta iteración, sin tener en cuenta los ya cogidos en iteraciones anteriores
 
-            # currentState = SET[count]
             for state in SET:
                 if (heuristic(state) < heuristic(currentState)) and (state not in SETOrdered):
                     # print("Supuestamente %s no está en %s" % (state, SETOrdered))
                     currentState = deepcopy(state)
             # print("sucessor: %s (Heur: %s)" % (currentState, heuristic(currentState)))
             SETOrdered.append(currentState)
-            # count = count + 1
-
 
 
         SET = SETOrdered
 
         # print("SET ordenado: %s" % (SET))
 
-        BEAM = []  # the empty set
+        BEAM = []
         g = g + 1
-
-        # Fill the BEAM for the next loop
-        #while len(SET) != 0 and B > len(BEAM):
-        #    count = 0
-        #    while count < B:
-        #        # print(SET)
-        #        if (count > len(SET) - 1):
-        #            break
-        #        state = SET.pop(0)
-        #        BEAM.append(state)
-        #        count = count + 1
 
         while len(SET) != 0 and B > len(BEAM):
             state = SET.pop(0)
@@ -131,16 +114,9 @@ def busqueda_en_haz(B, initial_state, memory, goal_state):
                     # return "No se repite nada"
 
                 hash_table.append(state)
-                #print("A memoria: %s" % (state))
+                # print("A memoria: %s" % (state))
 
                 BEAM.append(state)
                 # print("BEAM: %s" % (BEAM))
 
     return [0, g, num_estados_generados, len(hash_table), time]
-
-#import random
-
-#for i in range(10): print(random.randrange(100)) # Distintos
-
-#random.seed(365273) # Cambiar semilla para 15 instancias que para 30, 100, etc...
-                    # No cambiar semilla de un algoritmo a otro de búsqueda en haz
