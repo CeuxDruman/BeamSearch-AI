@@ -107,32 +107,73 @@ def BULB(initial_state, goal_state, B, memory):
         limitWhile = limitWhile - 1
         # Volvemos al while.
 
+# Es la lógica del algoritmo.
+# Recibe:
+    # depth: Profundidas del árbol en la que estamos
+    # discrepancias: Número de discrepancias permitidas.
+    # hash_table: Tabla que guarda los estados visitados.
+    # hash_levels: Tabla, de mismo tamaño que hash_table, que guarda la profundidas de los estados visitados.
+    # goal_state: Estado final al que queremos llegar.
+    # memory: Tamaño máximo del hash_table. Memoria disponible para el problema.
+    # num_estados_generados: Contador de número de estados generados.
 def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memory,num_estados_generados):
 
     # print("Hash Table: %s" % (hash_table))
     # print("Hash Levels: %s" % (hash_levels))
 
+    # A la izquierda:
+        # SLICE: Conjunto de estados a tratar en esta iteración
+        # value: -
+        # index: -
+    # A la derecha:
+        # nextSlice(): Genera el conjunto de estados a tratar.
+        # Recibe:
+            # depth: Profundidad en la que nos encontramos.
+            # 0: Hace refencia al índice a partir del cual empiezan a contarse los estados de un SLICE.
+            # B: Tamaño del haz.
+            # hash_table: Tabla que guarda los estados visitados.
+            # hash_levels: Tabla, de mismo tamaño que hash_table, que guarda la profundidas de los estados visitados.
+            # goal_state: Estado final al que queremos llegar.
+            # memory: Tamaño máximo del hash_table. Memoria disponible para el problema.
+            # num_estados_generados: Contador de número de estados generados.
     [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
 
     # print("SLICE: %s" % (SLICE))
     # print("value: %s" % (value))
     # print("index: %s" % (index))
 
+    # -
     if value >= 0:
         return value
 
+    # Aquí vemos si se permiten discrepancias.
+    # En este caso, no se permiten discrepancias.
     if discrepancies == 0:
+
+        # Preguntamos si hay estados a tratar.
+        # En este caso, al no haber, se devueve infinito y volvemos al BULB()
         if SLICE is []:
             return float('inf')
+
+        # Calculamos el tamaño del camino con una llamada recursiva.
+        # Al tratarse de un escalón más, depth se incrementa.
         pathlenght = BULBprobe(depth+1, 0, B, hash_table, hash_levels, goal_state, memory,num_estados_generados)
+
+        # Aquí vamos borrando del hash_table los elementos del SLICE y sus posiciones del hash_levels.
         for s in SLICE:
             if s in hash_table:
                 pos_in_hash_table = hash_table.index(s)
                 hash_table.remove(s)
                 # memory_table_instance.memory_table.remove(s)
                 hash_levels.pop(pos_in_hash_table)
+
+        # Devolvemos la distancia entre el estado incial y el final.
         return pathlenght
+
+    # En este caso sí se permiten discrepancias.
     else:
+
+        # Si el SLICE nos está vacío, eliminamos todos sus elementos del hash_table y sus posiciones del hash_levels
         if SLICE is not []:
             for s in SLICE:
                 if s in hash_table:
@@ -140,36 +181,66 @@ def BULBprobe(depth, discrepancies, B, hash_table, hash_levels, goal_state, memo
                     hash_table.remove(s)
                     # memory_table_instance.hash_table2.remove(s)
                     hash_levels.pop(pos_in_hash_table)
+
+        # -
         while True:
+
+            # Calcumos de nuevo SLICE, value e index, pero esta vez, le pasamos el número de discrepancias que haya, no 0 como antes.
             [SLICE, value, index] = nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
+
+            # -
             if value >= 0:
                 if value < float('inf'):
                     return value
                 else:
                     break
+
+            # Si no hay estados a tratar en SLICE, salimos de while.
             if SLICE is []:
                 continue
+
+            # Calculamos el tamaño del camino.
+            # Aumentamos la profundidad porque estamos adentrándonos en el grafo.
+            # Disminuimos la discrepancias porque ya se ha usado el token.
             pathlenght = BULBprobe(depth+1, discrepancies-1, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
+
+            # Eliminamos de hash_table todos los estados del SLICE y sus posiciones del hash_levels
             for s in SLICE:
                 if s in hash_table:
                     pos_in_hash_table = hash_table.index(s)
                     hash_table.remove(s)
                     # memory_table_instance.memory_table.remove(s)
                     hash_levels.pop(pos_in_hash_table)
+
+            # Si el tamaño del caminos es menor que infinito es que hemos encontrado solución y la devolvemos.
             if pathlenght < float('inf'):
                 return pathlenght
+
+        # Calculamos de nuevo SLICE, value e index.
+        # Discrepancias vuelve a valer 0 porque hemos gastado todos los token de discrepancias permitidas.
         [SLICE, value, index] = nextSlice(depth, 0, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
+
+        # -
         if value >= 0:
             return value
+
+        # Si no hay estados a tratar, devolvemos infinito.
         if SLICE is []:
             return float('inf')
+
+        # Calculamos el tamaño del camino.
+        # Incrementamos la profundidas porque estamos en un nivel inferior en el árbol.
         pathlenght = BULBprobe(depth+1, discrepancies, B, hash_table, hash_levels, goal_state, memory, num_estados_generados)
+
+        # Borramos los estados de SLICE del hash_table y sus posiciones del hash_levels.
         for s in SLICE:
             if s in hash_table:
                 pos_in_hash_table = hash_table.index(s)
                 hash_table.remove(s)
                 # memory_table_instance.memory_table.remove(s)
                 hash_levels.pop(pos_in_hash_table)
+
+        # Devolvemos la longitud del árbol.
         return pathlenght
 
 def nextSlice(depth, index, B, hash_table, hash_levels, goal_state, memory, num_estados_generados):
